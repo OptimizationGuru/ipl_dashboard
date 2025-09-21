@@ -33,31 +33,83 @@ function MatchesList() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchMatches = async () => {
+    const fetchMatches = async (retryCount = 0) => {
       try {
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-        const response = await fetch(`${baseUrl}/api/matches`);
+        // Use relative URL for API calls in development with cache busting
+        const apiUrl = `/api/matches?type=all&t=${Date.now()}`;
+        console.log('Fetching matches from:', apiUrl);
+        
+        const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+          },
+          // Add timeout to prevent hanging requests
+          signal: AbortSignal.timeout(10000), // 10 second timeout
+        });
         
         if (!response.ok) {
-          throw new Error('Failed to fetch matches');
+          throw new Error(`HTTP ${response.status}: ${response.statusText}`);
         }
         
         const data = await response.json();
+        console.log('Successfully fetched matches:', data);
+        console.log('Raw match data:', data.data);
+        console.log('Match statuses:', data.data?.map((m: any) => ({ id: m.id, status: m.status })));
+        console.log('Match data details:', {
+          totalMatches: data.data?.length || 0,
+          liveMatches: data.data?.filter((m: any) => m.status === 'live').length || 0,
+          upcomingMatches: data.data?.filter((m: any) => m.status === 'upcoming').length || 0,
+          firstMatch: data.data?.[0] ? {
+            id: data.data[0].id,
+            status: data.data[0].status,
+            hasLiveScore: !!data.data[0].liveScore
+          } : null
+        });
         setMatches(data.data || []);
       } catch (error) {
         console.error('Error fetching matches:', error);
+        
+        // Retry logic for network errors
+        if (retryCount < 3 && (error instanceof Error && (error.name === 'TypeError' || error.message.includes('fetch')))) {
+          console.log(`Retrying fetch (attempt ${retryCount + 1}/3)...`);
+          setTimeout(() => fetchMatches(retryCount + 1), 2000 * (retryCount + 1)); // Exponential backoff
+          return;
+        }
+        
+        // Fallback to empty array on final failure
+        console.log('Using fallback: no matches available');
         setMatches([]);
       } finally {
         setLoading(false);
       }
     };
 
-    fetchMatches();
-    
+    // Add a small delay to ensure the server is ready
+    const timeoutId = setTimeout(() => {
+      fetchMatches();
+    }, 1000);
+
     // Refresh every 30 seconds
-    const interval = setInterval(fetchMatches, 30000);
-    return () => clearInterval(interval);
+    const interval = setInterval(() => {
+      fetchMatches();
+    }, 30000);
+    
+    return () => {
+      clearTimeout(timeoutId);
+      clearInterval(interval);
+    };
   }, []);
+
+  // Debug effect to monitor matches state changes
+  useEffect(() => {
+    console.log('🔄 Matches state changed:', {
+      matchesCount: matches.length,
+      matches: matches.map(m => ({ id: m.id, status: m.status }))
+    });
+  }, [matches]);
 
   if (loading) {
     return <MatchesSkeleton />;
@@ -66,6 +118,18 @@ function MatchesList() {
   const liveMatches = matches.filter(match => match.status === 'live');
   const upcomingMatches = matches.filter(match => match.status === 'upcoming');
   const displayMatches = liveMatches.length > 0 ? liveMatches : upcomingMatches;
+  
+  console.log('🔍 Match filtering debug:', {
+    totalMatches: matches.length,
+    liveMatches: liveMatches.length,
+    upcomingMatches: upcomingMatches.length,
+    displayMatches: displayMatches.length,
+    liveMatchStatuses: matches.map(m => ({ id: m.id, status: m.status })),
+    selectedMatches: displayMatches.map(m => ({ id: m.id, status: m.status }))
+  });
+  
+  console.log('🔍 Raw matches state:', matches);
+  console.log('🔍 Live matches found:', liveMatches);
 
   return (
     <div className="space-y-6">
@@ -75,15 +139,24 @@ function MatchesList() {
           <div className="text-gray-400 text-sm mt-2">Check back later for updates</div>
         </div>
       ) : (
-        displayMatches.map((match) => (
-          <div key={match.id} data-match-tabs>
-            {match.status === 'live' ? (
-              <MatchTabs match={match} />
-            ) : (
-              <MatchCard match={match} />
-            )}
-          </div>
-        ))
+        displayMatches.map((match) => {
+          console.log('🔍 Rendering match:', {
+            id: match.id,
+            status: match.status,
+            willRenderMatchTabs: match.status === 'live',
+            hasLiveScore: !!match.liveScore
+          });
+          
+          return (
+            <div key={match.id} data-match-tabs>
+              {match.status === 'live' ? (
+                <MatchTabs match={match} />
+              ) : (
+                <MatchCard match={match} />
+              )}
+            </div>
+          );
+        })
       )}
     </div>
   );
