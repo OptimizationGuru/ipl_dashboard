@@ -13,9 +13,7 @@ interface ScheduleTableProps {
 }
 
 export default function ScheduleTable({ schedule, loading, error, selectedYear }: ScheduleTableProps) {
-  // Pure presenter component - only handles UI logic, no data fetching
   
-  // Note: loading is always false in SSG/SSR mode, but kept for consistency
   if (loading) {
     return <ScheduleSkeleton />;
   }
@@ -32,7 +30,6 @@ export default function ScheduleTable({ schedule, loading, error, selectedYear }
 
   return (
     <div className="space-y-6">
-      {/* Season Stats with Year Selector */}
       <div className="bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 rounded-xl p-6 border border-blue-200 shadow-sm">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
           <div className="space-y-3">
@@ -60,7 +57,6 @@ export default function ScheduleTable({ schedule, loading, error, selectedYear }
         </div>
       </div>
 
-      {/* Status Legend */}
       <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200 shadow-sm">
         <div className="flex flex-nowrap items-center gap-3 sm:gap-4 text-sm overflow-x-auto">
           <span className="font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent flex-shrink-0">Status:</span>
@@ -79,7 +75,6 @@ export default function ScheduleTable({ schedule, loading, error, selectedYear }
         </div>
       </div>
 
-      {/* Schedule Table */}
       <div className="bg-gradient-to-br from-slate-50 via-white to-slate-50 rounded-xl shadow-lg border border-slate-200 overflow-hidden">
         <div className="hidden md:block">
           <ScheduleTableHeader />

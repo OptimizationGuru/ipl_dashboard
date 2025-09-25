@@ -5,7 +5,6 @@ interface ScheduleTableRowProps {
   className?: string;
 }
 
-// Team short forms mapping
 const TEAM_SHORT_FORMS: Record<string, string> = {
   'Chennai Super Kings': 'CSK',
   'Mumbai Indians': 'MI',
@@ -19,7 +18,6 @@ const TEAM_SHORT_FORMS: Record<string, string> = {
   'Lucknow Super Giants': 'LSG'
 };
 
-// Venue short forms mapping
 const VENUE_SHORT_FORMS: Record<string, string> = {
   'Wankhede Stadium, Mumbai': 'Wankhede, Mumbai',
   'M. Chinnaswamy Stadium, Bangalore': 'Chinnaswamy, Bangalore',
@@ -66,7 +64,6 @@ export default function ScheduleTableRow({ match, className = "" }: ScheduleTabl
 
   return (
     <div className={`grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 p-3 md:p-4 border-b border-slate-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group ${className}`}>
-      {/* Match & Status - Compact styling */}
       <div className="md:col-span-2 flex flex-row items-center space-x-2">
         <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm border border-blue-200">
           M{match.matchNumber}
@@ -76,7 +73,6 @@ export default function ScheduleTableRow({ match, className = "" }: ScheduleTabl
         </span>
       </div>
       
-      {/* Teams & Results - Compact design */}
       <div className="md:col-span-5 flex flex-col space-y-0.5">
         <div className="flex items-center space-x-1.5">
           <span className="text-green-600 text-xs">⚔️</span>
@@ -97,7 +93,6 @@ export default function ScheduleTableRow({ match, className = "" }: ScheduleTabl
           </span>
         </div>
         
-        {/* Compact Match Result for completed matches */}
         {match.status === 'completed' && match.result && (
           <div className="flex items-center space-x-1 ml-6">
             <span className="text-yellow-600 text-xs">🏆</span>
@@ -113,7 +108,6 @@ export default function ScheduleTableRow({ match, className = "" }: ScheduleTabl
         )}
       </div>
       
-      {/* Venue - Compact styling */}
       <div className="md:col-span-3 flex items-start">
         <div className="flex items-center space-x-1">
           <span className="text-purple-600 text-xs">🏟️</span>
@@ -123,7 +117,6 @@ export default function ScheduleTableRow({ match, className = "" }: ScheduleTabl
         </div>
       </div>
       
-      {/* Date & Time - Compact styling */}
       <div className="md:col-span-2 flex flex-col space-y-0.5">
         <div className="flex items-center space-x-1">
           <span className="text-orange-600 text-xs">⏰</span>

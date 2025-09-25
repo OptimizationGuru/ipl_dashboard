@@ -4,7 +4,6 @@ import ScheduleTable from './ScheduleTable';
 import SeasonInfo from './SeasonInfo';
 import YearSelector from './YearSelector';
 
-// List of valid IPL team names for filtering
 const IPL_TEAMS = [
   'Chennai Super Kings',
   'Mumbai Indians',
@@ -19,7 +18,6 @@ const IPL_TEAMS = [
 ];
 
 function isIPLMatch(match: ScheduleData): boolean {
-  // Check if both teams are IPL teams
   const team1IsIPL = IPL_TEAMS.some(team => 
     match.team1.toLowerCase().includes(team.toLowerCase()) ||
     team.toLowerCase().includes(match.team1.toLowerCase())
@@ -38,22 +36,17 @@ interface ScheduleContainerProps {
 }
 
 export default async function ScheduleContainer({ searchParams }: ScheduleContainerProps) {
-  // Server-side container that fetches data during SSG/SSR
   const selectedYear = searchParams.year || '2025';
   let schedule: ScheduleData[] = [];
   let error: string | null = null;
 
   try {
     const allMatches = await getSchedule(selectedYear);
-    // Filter to only show IPL matches
     schedule = allMatches.filter(isIPLMatch);
-    console.log(`Filtered ${allMatches.length} total matches to ${schedule.length} IPL matches for year ${selectedYear}`);
   } catch (err) {
-    console.error('Error fetching schedule:', err);
     error = err instanceof Error ? err.message : 'Failed to fetch schedule';
   }
 
-  // Container handles all data logic and passes clean props to presenter
   return (
     <div className="space-y-6">
       <ScheduleTable 

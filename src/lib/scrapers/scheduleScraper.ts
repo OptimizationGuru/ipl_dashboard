@@ -4,7 +4,6 @@ import { ScheduleData, ScrapingResult } from '@/types';
 
 export class ScheduleScraper {
   private getBaseUrl(year: string): string {
-    // Map years to their ESPN Cricinfo series IDs
     const yearToSeriesId: Record<string, string> = {
       '2020': 'ipl-2020-1210595',
       '2021': 'ipl-2021-1249214', 
@@ -40,16 +39,13 @@ export class ScheduleScraper {
       const $ = cheerio.load(response.data);
       const schedule: ScheduleData[] = [];
 
-      // Look for match schedule items
       $('.ds-bg-fill-content-prime.ds-rounded-lg, .ds-flex.ds-flex-col').each((index, element) => {
         const $match = $(element);
         
-        // Try different selectors for match information
         const teamElements = $match.find('.ds-text-tight-l, .ds-text-tight-m, .ds-text-tight-s');
         const teams = teamElements.map((i, el) => $(el).text().trim()).get();
         
         if (teams.length >= 2) {
-          // Try multiple selectors for venue
           const venueSelectors = [
             '.ds-text-tight-xs',
             '.ds-text-tight-s',
@@ -67,7 +63,6 @@ export class ScheduleScraper {
             }
           }
           
-          // Try multiple selectors for date/time
           const dateTimeSelectors = [
             '.ds-text-tight-xs',
             '.ds-text-tight-s',
@@ -85,14 +80,11 @@ export class ScheduleScraper {
             }
           }
           
-          // Extract match number from text or use index
           const matchNumberMatch = $match.text().match(/Match\s*(\d+)/i);
           const matchNumber = matchNumberMatch ? parseInt(matchNumberMatch[1]) : index + 1;
 
-          // Generate realistic IPL 2025 dates (March-May 2025)
           const matchDate = this.generateIPLDate(matchNumber, year);
           
-          // Determine match status and result
           const matchStatus = this.determineMatchStatus(matchNumber, matchDate, year);
           const matchResult = matchStatus === 'completed' ? this.generateMatchResult(teams[0], teams[1]) : undefined;
           
@@ -117,7 +109,6 @@ export class ScheduleScraper {
         timestamp: Date.now()
       };
     } catch (error) {
-      console.error('Error scraping schedule:', error);
       return {
         data: [],
         success: false,
@@ -128,7 +119,6 @@ export class ScheduleScraper {
   }
 
   private extractDate(dateTime: string): string {
-    // Try multiple date formats
     const formats = [
       /(\w{3}\s+\d{1,2})/,           // "Mar 15"
       /(\d{1,2}\/\d{1,2}\/\d{4})/,   // "15/03/2025"
@@ -144,12 +134,10 @@ export class ScheduleScraper {
       }
     }
     
-    // If no date found, return the original string or a placeholder
     return dateTime.trim() || 'TBD';
   }
 
   private extractTime(dateTime: string): string {
-    // Try multiple time formats
     const timeFormats = [
       /(\d{1,2}:\d{2}\s*[AP]M)/i,     // "7:30 PM"
       /(\d{1,2}:\d{2})/,              // "19:30"
@@ -168,27 +156,18 @@ export class ScheduleScraper {
   }
 
   private generateIPLDate(matchNumber: number, year: string): { date: string; time: string } {
-    // IPL seasons typically run from March to May
     const yearNum = parseInt(year);
     const startDate = new Date(`${yearNum}-03-22`);
     
-    // Calculate realistic date progression
-    // IPL has ~74 days for 92 matches, so roughly 1.25 matches per day
-    // But matches are usually on specific days, so let's use a more realistic approach
     const daysOffset = Math.floor((matchNumber - 1) * 0.8); // 0.8 days between matches on average
     const matchDate = new Date(startDate);
     matchDate.setDate(startDate.getDate() + daysOffset);
     
-    // Format date as "Mar 22" or "May 15"
     const formattedDate = matchDate.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric'
     });
     
-    // Generate realistic match times based on match number
-    // Early matches (1-30): mostly 7:30 PM, some 3:30 PM
-    // Mid matches (31-60): mix of both
-    // Late matches (61-92): mostly 7:30 PM for playoffs
     let time: string;
     if (matchNumber <= 30) {
       time = Math.random() < 0.8 ? '7:30 PM' : '3:30 PM';
@@ -205,7 +184,6 @@ export class ScheduleScraper {
   }
 
   private generateIPLVenue(matchNumber: number): string {
-    // More realistic venue distribution based on match number
     const venues = [
       'Wankhede Stadium, Mumbai',
       'M. Chinnaswamy Stadium, Bangalore',
@@ -219,8 +197,6 @@ export class ScheduleScraper {
       'Sawai Mansingh Stadium, Jaipur'
     ];
     
-    // Use match number to create more realistic venue distribution
-    // This ensures venues are distributed more evenly rather than completely random
     const venueIndex = (matchNumber + Math.floor(matchNumber / 3)) % venues.length;
     return venues[venueIndex];
   }
@@ -228,11 +204,9 @@ export class ScheduleScraper {
   private determineMatchStatus(matchNumber: number, matchDate: { date: string; time: string }, year: string): 'upcoming' | 'live' | 'completed' {
     const now = new Date();
     
-    // Parse the match date (format: "Mar 22")
     const matchDateStr = `${matchDate.date} ${year}`;
     const matchDateTime = new Date(matchDateStr);
     
-    // Set the match time
     const timeStr = matchDate.time; // e.g., "7:30 PM"
     const [time, period] = timeStr.split(' ');
     const [hours, minutes] = time.split(':').map(Number);
@@ -246,10 +220,8 @@ export class ScheduleScraper {
     
     matchDateTime.setHours(matchHour, minutes, 0, 0);
     
-    // Add 3.5 hours for match duration (typical T20 match)
     const matchEndTime = new Date(matchDateTime.getTime() + (3.5 * 60 * 60 * 1000));
     
-    // Determine status based on current time
     if (now < matchDateTime) {
       return 'upcoming';
     } else if (now >= matchDateTime && now <= matchEndTime) {
@@ -260,52 +232,42 @@ export class ScheduleScraper {
   }
 
   private generateMatchResult(team1: string, team2: string): { winner: string; winBy: string; team1Score?: string; team2Score?: string; manOfTheMatch?: string } {
-    // Decide who bats first (randomly)
     const team1BatsFirst = Math.random() < 0.5;
     const battingTeam = team1BatsFirst ? team1 : team2;
     const chasingTeam = team1BatsFirst ? team2 : team1;
     
-    // Generate first innings score (team batting first)
     const firstInningsRuns = Math.floor(Math.random() * 80) + 120; // 120-199
     const firstInningsWickets = Math.floor(Math.random() * 8); // 0-7
     const firstInningsOvers = 20;
     
-    // Generate second innings score (team chasing)
     const secondInningsRuns = Math.floor(Math.random() * 80) + 120; // 120-199
     const secondInningsWickets = Math.floor(Math.random() * 8); // 0-7
     const secondInningsOvers = Math.floor(Math.random() * 5) + 15; // 15-20 overs
     
-    // Determine winner and win type based on cricket rules
     let winner: string;
     let winBy: string;
     let team1Score: string;
     let team2Score: string;
     
     if (secondInningsRuns > firstInningsRuns) {
-      // Chasing team won
       winner = chasingTeam;
       const ballsRemaining = (20 - secondInningsOvers) * 6;
       const wicketsInHand = 10 - secondInningsWickets;
       
       if (ballsRemaining > 0) {
-        // Won by wickets and balls remaining
         winBy = `${wicketsInHand} wickets and ${ballsRemaining} balls remaining`;
       } else {
-        // Won by wickets only
         winBy = `${wicketsInHand} wickets`;
       }
     } else if (secondInningsRuns < firstInningsRuns) {
-      // Batting first team won
       winner = battingTeam;
       const margin = firstInningsRuns - secondInningsRuns;
       winBy = `${margin} runs`;
     } else {
-      // Tie - super over scenario
       winner = Math.random() < 0.5 ? team1 : team2;
       winBy = '1 run (Super Over)';
     }
     
-    // Set scores based on batting order
     if (team1BatsFirst) {
       team1Score = `${firstInningsRuns}/${firstInningsWickets} (${firstInningsOvers})`;
       team2Score = `${secondInningsRuns}/${secondInningsWickets} (${secondInningsOvers})`;
@@ -314,7 +276,6 @@ export class ScheduleScraper {
       team2Score = `${firstInningsRuns}/${firstInningsWickets} (${firstInningsOvers})`;
     }
     
-    // Generate Man of the Match
     const players = [
       'Virat Kohli', 'Rohit Sharma', 'MS Dhoni', 'KL Rahul', 'Hardik Pandya',
       'Jasprit Bumrah', 'Ravindra Jadeja', 'Shubman Gill', 'Suryakumar Yadav',

@@ -17,7 +17,6 @@ export default function YearSelector({ selectedYear, onYearChange, loading = fal
     if (onYearChange) {
       onYearChange(year);
     } else {
-      // Default behavior: navigate to new URL with year parameter
       router.push(`/schedule?year=${year}`);
     }
   };
