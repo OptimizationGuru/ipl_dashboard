@@ -1,3 +1,12 @@
+export interface CricketEvent {
+  type: 'ball' | 'wicket' | 'wide' | 'noball' | 'bye' | 'legbye' | 'stumped';
+  runs: number;
+  description: string;
+  batsman?: string;
+  bowler?: string;
+  nextBallDelay?: number;
+}
+
 export interface BatsmanStats {
   name: string;
   runs: number;
@@ -81,6 +90,7 @@ export interface MatchData {
   lastOver?: BallDetails[];
   lastWicket?: WicketDetails;
   last18Balls?: BallDetails[];
+  commentaryHistory?: CricketEvent[];
 }
 
 export interface PointsTableData {
@@ -104,6 +114,14 @@ export interface ScheduleData {
   time: string;
   matchNumber: number;
   season: string;
+  status: 'upcoming' | 'live' | 'completed';
+  result?: {
+    winner: string;
+    winBy: string; // e.g., "7 wickets", "45 runs", "won by 3 wickets"
+    team1Score?: string; // e.g., "185/7 (20)"
+    team2Score?: string; // e.g., "178/9 (20)"
+    manOfTheMatch?: string;
+  };
 }
 
 export interface ScrapingResult<T> {

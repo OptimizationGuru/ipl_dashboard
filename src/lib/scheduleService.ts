@@ -1,10 +1,9 @@
 import { ScheduleData } from '@/types';
 
-export async function getSchedule(): Promise<ScheduleData[]> {
+export async function getSchedule(year: string = '2025'): Promise<ScheduleData[]> {
   try {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    console.log('Fetching schedule from:', `${baseUrl}/api/schedule`);
-    const response = await fetch(`${baseUrl}/api/schedule`, {
+    const response = await fetch(`${baseUrl}/api/schedule?year=${year}`, {
       next: { revalidate: 0 } // No caching for testing
     });
     
@@ -13,7 +12,6 @@ export async function getSchedule(): Promise<ScheduleData[]> {
     }
     
     const data = await response.json();
-    console.log('Schedule data:', data);
     return data.data || [];
   } catch (error) {
     console.error('Error fetching schedule:', error);

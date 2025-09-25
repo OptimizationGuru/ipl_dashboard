@@ -7,8 +7,23 @@ import { ScheduleData } from '@/types';
 
 export async function GET(request: NextRequest) {
   try {
+    // Get year parameter from query string
+    const { searchParams } = new URL(request.url);
+    const year = searchParams.get('year') || '2025';
+    
+    // Validate year (2020-2025)
+    const validYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
+    if (!validYears.includes(year)) {
+      return NextResponse.json({
+        data: [],
+        success: false,
+        error: `Invalid year. Please choose from: ${validYears.join(', ')}`,
+        timestamp: Date.now()
+      }, { status: 400 });
+    }
+    
     // Try to get cached data first
-    const cacheKey = 'schedule_data';
+    const cacheKey = `schedule_data_${year}`;
     const cachedData = await getCachedData(cacheKey);
     
     if (cachedData) {
@@ -22,9 +37,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Try scraping first
-    console.log('Attempting to scrape schedule data...');
+    console.log(`Attempting to scrape schedule data for year ${year}...`);
     const scraper = new ScheduleScraper();
-    const scrapingResult = await scraper.scrapeSchedule();
+    const scrapingResult = await scraper.scrapeSchedule(year);
     
     if (scrapingResult.success && scrapingResult.data.length > 0) {
       console.log(`Successfully scraped ${scrapingResult.data.length} matches`);
@@ -40,7 +55,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Fallback to static dummy data (10 matches)
-    console.log('Scraping failed, using static dummy schedule data...');
+    console.log(`Scraping failed, using static dummy schedule data for year ${year}...`);
     console.log(`Using ${dummySchedule.length} static matches`);
     
     // Cache the static data for 30 minutes

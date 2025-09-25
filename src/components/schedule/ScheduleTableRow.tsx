@@ -5,64 +5,131 @@ interface ScheduleTableRowProps {
   className?: string;
 }
 
+// Team short forms mapping
+const TEAM_SHORT_FORMS: Record<string, string> = {
+  'Chennai Super Kings': 'CSK',
+  'Mumbai Indians': 'MI',
+  'Royal Challengers Bengaluru': 'RCB',
+  'Kolkata Knight Riders': 'KKR',
+  'Delhi Capitals': 'DC',
+  'Punjab Kings': 'PBKS',
+  'Rajasthan Royals': 'RR',
+  'Sunrisers Hyderabad': 'SRH',
+  'Gujarat Titans': 'GT',
+  'Lucknow Super Giants': 'LSG'
+};
+
+// Venue short forms mapping
+const VENUE_SHORT_FORMS: Record<string, string> = {
+  'Wankhede Stadium, Mumbai': 'Wankhede, Mumbai',
+  'M. Chinnaswamy Stadium, Bangalore': 'Chinnaswamy, Bangalore',
+  'Eden Gardens, Kolkata': 'Eden Gardens, Kolkata',
+  'MA Chidambaram Stadium, Chennai': 'Chepauk, Chennai',
+  'Narendra Modi Stadium, Ahmedabad': 'Motera, Ahmedabad',
+  'Rajiv Gandhi Stadium, Hyderabad': 'RG Stadium, Hyderabad',
+  'Punjab Cricket Association Stadium, Mohali': 'PCA Stadium, Mohali',
+  'Arun Jaitley Stadium, Delhi': 'Kotla, Delhi',
+  'Bharat Ratna Shri Atal Bihari Vajpayee Ekana Cricket Stadium, Lucknow': 'Ekana, Lucknow',
+  'Sawai Mansingh Stadium, Jaipur': 'SMS Stadium, Jaipur'
+};
+
 export default function ScheduleTableRow({ match, className = "" }: ScheduleTableRowProps) {
-  // Determine match status based on date
-  // Parse date like "Mar 22" to a proper date
-  const parseMatchDate = (dateStr: string) => {
-    // If it's already a full date, use it
-    if (dateStr.includes('/') || dateStr.includes('-')) {
-      return new Date(dateStr);
-    }
-    
-    // For "Mar 22" format, use 2025 (IPL 2025 season)
-    return new Date(`${dateStr} 2025`);
+  const getTeamShortForm = (teamName: string): string => {
+    return TEAM_SHORT_FORMS[teamName] || teamName;
   };
-  
-  const matchDate = parseMatchDate(match.date);
-  const today = new Date();
-  const isCompleted = matchDate < today;
-  const isToday = matchDate.toDateString() === today.toDateString();
-  
+
+  const getVenueShortForm = (venueName: string): string => {
+    return VENUE_SHORT_FORMS[venueName] || venueName;
+  };
+
   const getStatusColor = () => {
-    if (isCompleted) return 'bg-green-100 text-green-800 border-green-200';
-    if (isToday) return 'bg-orange-100 text-orange-800 border-orange-200';
-    return 'bg-blue-100 text-blue-800 border-blue-200';
+    switch (match.status) {
+      case 'completed':
+        return 'bg-green-100 text-green-800 border-green-200';
+      case 'live':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
+      default:
+        return 'bg-blue-100 text-blue-800 border-blue-200';
+    }
   };
 
   const getStatusText = () => {
-    if (isCompleted) return 'Completed';
-    if (isToday) return 'Today';
-    return 'Upcoming';
+    switch (match.status) {
+      case 'completed':
+        return '✓';
+      case 'live':
+        return '●';
+      default:
+        return '⏳';
+    }
   };
 
   return (
-    <div className={`grid grid-cols-4 gap-4 p-4 border-b border-slate-200 hover:bg-slate-50 transition-all duration-200 ${className}`}>
-      <div className="flex items-center space-x-2">
-        <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-3 py-1 rounded-full text-xs font-bold shadow-sm border border-blue-200">
-          Match {match.matchNumber}
+    <div className={`grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 p-3 md:p-4 border-b border-slate-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group ${className}`}>
+      {/* Match & Status - Compact styling */}
+      <div className="md:col-span-2 flex flex-row items-center space-x-2">
+        <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm border border-blue-200">
+          M{match.matchNumber}
         </span>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium border ${getStatusColor()}`}>
+        <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium border shadow-sm ${getStatusColor()}`}>
           {getStatusText()}
         </span>
       </div>
-      <div className="flex flex-col space-y-1">
-        <div className="flex items-center space-x-2">
-          <span className="font-semibold text-slate-800">{match.team1}</span>
-          <span className="text-slate-400 text-xs">vs</span>
-          <span className="font-semibold text-slate-800">{match.team2}</span>
+      
+      {/* Teams & Results - Compact design */}
+      <div className="md:col-span-5 flex flex-col space-y-0.5">
+        <div className="flex items-center space-x-1.5">
+          <span className="text-green-600 text-xs">⚔️</span>
+          <span className={`font-semibold text-xs truncate ${
+            match.status === 'completed' && match.result?.winner === match.team1 
+              ? 'text-green-700 font-bold' 
+              : 'text-slate-800'
+          }`}>
+            {getTeamShortForm(match.team1)}
+          </span>
+          <span className="text-slate-400 text-xs flex-shrink-0">vs</span>
+          <span className={`font-semibold text-xs truncate ${
+            match.status === 'completed' && match.result?.winner === match.team2 
+              ? 'text-green-700 font-bold' 
+              : 'text-slate-800'
+          }`}>
+            {getTeamShortForm(match.team2)}
+          </span>
         </div>
-        <div className="text-xs text-slate-500">
-          {match.team1} vs {match.team2}
+        
+        {/* Compact Match Result for completed matches */}
+        {match.status === 'completed' && match.result && (
+          <div className="flex items-center space-x-1 ml-6">
+            <span className="text-yellow-600 text-xs">🏆</span>
+            <span className="text-xs font-medium text-green-700">
+              {getTeamShortForm(match.result.winner)} won by {match.result.winBy}
+            </span>
+            {match.result.team1Score && match.result.team2Score && (
+              <span className="text-xs text-slate-500 ml-2">
+                • {getTeamShortForm(match.team1)} {match.result.team1Score} | {getTeamShortForm(match.team2)} {match.result.team2Score}
+              </span>
+            )}
+          </div>
+        )}
+      </div>
+      
+      {/* Venue - Compact styling */}
+      <div className="md:col-span-3 flex items-start">
+        <div className="flex items-center space-x-1">
+          <span className="text-purple-600 text-xs">🏟️</span>
+          <span className="text-xs font-medium text-slate-700 leading-tight" title={match.venue}>
+            {getVenueShortForm(match.venue || 'TBD')}
+          </span>
         </div>
       </div>
-      <div className="flex items-center">
-        <span className="text-sm text-slate-600 truncate font-medium" title={match.venue}>
-          {match.venue || 'TBD'}
-        </span>
-      </div>
-      <div className="flex flex-col space-y-1">
-        <span className="text-sm font-semibold text-slate-800">{match.date}</span>
-        <span className="text-xs text-slate-500 font-medium">{match.time || 'TBD'}</span>
+      
+      {/* Date & Time - Compact styling */}
+      <div className="md:col-span-2 flex flex-col space-y-0.5">
+        <div className="flex items-center space-x-1">
+          <span className="text-orange-600 text-xs">⏰</span>
+          <span className="text-xs font-semibold text-slate-800">{match.date}</span>
+        </div>
+        <span className="text-xs text-slate-500 ml-4">{match.time || 'TBD'}</span>
       </div>
     </div>
   );
