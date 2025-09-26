@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { PointsTableData } from '@/types';
+import { PointsTableData } from '../types';
 
 export class ESPNApiClient {
   private readonly baseUrl = 'https://site.api.espn.com/apis/v2/sports';

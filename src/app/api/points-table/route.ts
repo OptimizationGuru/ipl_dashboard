@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { ESPNApiClient } from '@/lib/espnApiClient';
-import { DynamicDataGenerator } from '@/lib/dynamicDataGenerator';
-import { getCachedData, setCachedData } from '@/lib/cache';
+import { ESPNApiClient } from '../../../lib/espnApiClient';
+import { DynamicDataGenerator } from '../../../lib/dynamicDataGenerator';
+import { getCachedData, setCachedData } from '../../../lib/cache';
 
 // Required for static export
 export const dynamic = 'force-static';

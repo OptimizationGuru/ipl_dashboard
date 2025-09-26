@@ -1,4 +1,4 @@
-import { PointsTableData } from '@/types';
+import { PointsTableData } from '../types';
 
 // Types for better type safety
 type YearKey = '2020' | '2021' | '2022' | '2023' | '2024' | '2025';
