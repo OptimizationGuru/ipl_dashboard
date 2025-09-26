@@ -3,6 +3,9 @@ import { ScheduleScraper } from '@/lib/scrapers/scheduleScraper';
 import { getCachedData, setCachedData } from '@/lib/cache';
 import { dummySchedule } from '@/lib/dummyDataNew';
 
+// Required for static export
+export const dynamic = 'force-static';
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
