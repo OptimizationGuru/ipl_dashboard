@@ -3,6 +3,8 @@ import { MatchData } from '@/types';
 import MatchCard from '@/components/MatchCard';
 import MatchTabs from '@/components/MatchTabs';
 import { MatchesSkeleton } from '@/components/ui/Skeleton';
+import ErrorDisplay from '@/components/ui/ErrorDisplay';
+import EmptyState from '@/components/ui/EmptyState';
 
 interface MatchesListProps {
   matches: MatchData[];
@@ -12,21 +14,11 @@ interface MatchesListProps {
 }
 
 export function MatchesList({ matches, loading, error, onMatchUpdate }: MatchesListProps) {
-  // Memoize expensive filtering operations
+
   const displayMatches = useMemo(() => {
     const liveMatches = matches.filter(match => match.status === 'live');
     const upcomingMatches = matches.filter(match => match.status === 'upcoming');
-    const result = liveMatches.length > 0 ? liveMatches : upcomingMatches;
-    
-    console.log('📊 MatchesList: Processing matches:', {
-      totalMatches: matches.length,
-      liveMatches: liveMatches.length,
-      upcomingMatches: upcomingMatches.length,
-      displayMatches: result.length,
-      liveMatchIds: liveMatches.map(m => m.id),
-      timestamp: new Date().toISOString()
-    });
-    
+    const result = liveMatches.length > 0 ? liveMatches : upcomingMatches;    
     return result;
   }, [matches]);
 
@@ -35,20 +27,16 @@ export function MatchesList({ matches, loading, error, onMatchUpdate }: MatchesL
   }
 
   if (error) {
-    return (
-      <div className="text-center py-8">
-        <div className="text-red-500 text-lg">Error loading matches</div>
-        <div className="text-gray-400 text-sm mt-2">{error}</div>
-      </div>
-    );
+    return <ErrorDisplay error={error} title="Error loading matches" />;
   }
   
   if (displayMatches.length === 0) {
     return (
-      <div className="text-center py-8">
-        <div className="text-gray-500 text-lg">No matches available</div>
-        <div className="text-gray-400 text-sm mt-2">Check back later for updates</div>
-      </div>
+      <EmptyState 
+        title="No matches available"
+        description="Check back later for updates"
+        icon="🏏"
+      />
     );
   }
 

@@ -1,5 +1,4 @@
-'use client';
-
+import { memo } from 'react';
 import { MatchData } from '@/types';
 
 interface MatchCardProps {
@@ -7,7 +6,7 @@ interface MatchCardProps {
   showLiveScore?: boolean;
 }
 
-export default function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
+function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'live':
@@ -107,3 +106,7 @@ export default function MatchCard({ match, showLiveScore = true }: MatchCardProp
     </div>
   );
 }
+
+// Memoize MatchCard to prevent unnecessary re-renders when parent updates
+// This is beneficial because MatchCard is rendered in a list and has complex rendering logic
+export default memo(MatchCard);
