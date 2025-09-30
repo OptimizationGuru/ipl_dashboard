@@ -107,45 +107,8 @@ export class DynamicDataService {
     updatedState.team1.overs = Math.floor(updatedState.team1.balls / 6);
     updatedState.team2.overs = Math.floor(updatedState.team2.balls / 6);
 
-    // ===== STRIKE CHANGE LOGIC FIX =====
-    // Handle strike swap on odd runs (ball events with odd runs)
-    if (event.type === 'ball' && event.runs % 2 === 1) {
-      const temp = updatedState.strikerIndex;
-      updatedState.strikerIndex = updatedState.nonStrikerIndex;
-      updatedState.nonStrikerIndex = temp;
-      
-      // Update isOnStrike properties to match the indices
-      const battingTeam = updatedState.currentInnings === 1 ? 'team1' : 'team2';
-      const batsmanStats = updatedState.batsmanStats[battingTeam];
-      
-      // Reset all isOnStrike to false
-      batsmanStats.forEach(batsman => batsman.isOnStrike = false);
-      
-      // Set the correct batsmen as on strike and non-strike
-      if (batsmanStats[updatedState.strikerIndex]) {
-        batsmanStats[updatedState.strikerIndex].isOnStrike = true;
-      }
-    }
-
-    // Handle strike swap at end of over (when 6 legal balls are completed)
-    if (updatedState.legalBallsThisOver >= 6) {
-      const temp = updatedState.strikerIndex;
-      updatedState.strikerIndex = updatedState.nonStrikerIndex;
-      updatedState.nonStrikerIndex = temp;
-      updatedState.legalBallsThisOver = 0; // Reset for next over
-      
-      // Update isOnStrike properties to match the indices
-      const battingTeam = updatedState.currentInnings === 1 ? 'team1' : 'team2';
-      const batsmanStats = updatedState.batsmanStats[battingTeam];
-      
-      // Reset all isOnStrike to false
-      batsmanStats.forEach(batsman => batsman.isOnStrike = false);
-      
-      // Set the correct batsmen as on strike and non-strike
-      if (batsmanStats[updatedState.strikerIndex]) {
-        batsmanStats[updatedState.strikerIndex].isOnStrike = true;
-      }
-    }
+    // Strike rotation is now handled entirely by MatchSimulator
+    // No need for duplicate logic here
 
     // Build final match data
     const updatedMatchData = this.buildMatchData(updatedState, 'live');
