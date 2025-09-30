@@ -41,7 +41,7 @@ export function MatchesList({ matches, loading, error, onMatchUpdate }: MatchesL
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-0">
       {displayMatches.map((match) => (
         <div key={match.id} data-match-tabs>
           {match.status === 'live' ? (

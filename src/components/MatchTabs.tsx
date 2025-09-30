@@ -25,7 +25,7 @@ export default function MatchTabs({ match, onMatchUpdate }: MatchTabsProps) {
   });
 
   return (
-    <div className="pt-4">
+    <div>
       {/* Tab Navigation */}
       <div className="flex space-x-1 sm:space-x-2 mb-4">
         <button

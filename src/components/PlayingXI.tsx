@@ -246,9 +246,15 @@ export default function PlayingXI({ teams }: PlayingXIProps) {
         </div>
       </div>
 
-      {/* Players Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-3">
-        {team.players.map((player, index) => renderPlayerCard(player, index))}
+      {/* Players Grid - Horizontally Scrollable */}
+      <div className="overflow-x-auto">
+        <div className="flex gap-4 pb-4" style={{ minWidth: 'max-content' }}>
+          {team.players.map((player, index) => (
+            <div key={index} className="flex-shrink-0 w-80">
+              {renderPlayerCard(player, index)}
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
