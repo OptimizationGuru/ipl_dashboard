@@ -1,13 +1,13 @@
-'use client';
-
+import { memo } from 'react';
 import { MatchData } from '@/types';
+import { formatOvers } from '@/lib/utils';
 
 interface MatchCardProps {
   match: MatchData;
   showLiveScore?: boolean;
 }
 
-export default function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
+function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'live':
@@ -55,7 +55,7 @@ export default function MatchCard({ match, showLiveScore = true }: MatchCardProp
           <span className="font-semibold text-gray-800">{match.team1}</span>
           {match.liveScore && showLiveScore && (
             <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-              {match.liveScore.team1.runs}/{match.liveScore.team1.wickets} ({match.liveScore.team1.overs})
+              {match.liveScore.team1.runs}/{match.liveScore.team1.wickets} ({formatOvers(match.liveScore.team1.balls || 0)})
             </span>
           )}
         </div>
@@ -64,7 +64,7 @@ export default function MatchCard({ match, showLiveScore = true }: MatchCardProp
           <span className="font-semibold text-gray-800">{match.team2}</span>
           {match.liveScore && showLiveScore && (
             <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-              {match.liveScore.team2.runs}/{match.liveScore.team2.wickets} ({match.liveScore.team2.overs})
+              {match.liveScore.team2.runs}/{match.liveScore.team2.wickets} ({formatOvers(match.liveScore.team2.balls || 0)})
             </span>
           )}
         </div>
@@ -107,3 +107,5 @@ export default function MatchCard({ match, showLiveScore = true }: MatchCardProp
     </div>
   );
 }
+
+export default memo(MatchCard);
