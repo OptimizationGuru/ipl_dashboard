@@ -20,7 +20,7 @@ interface LiveScoreWidgetProps {
   onMatchUpdate?: () => void;
 }
 
-export default function LiveScoreWidgetRefactored({ matchId, initialMatch, onMatchUpdate }: LiveScoreWidgetProps) {
+export default function LiveScoreWidget({ matchId, initialMatch, onMatchUpdate }: LiveScoreWidgetProps) {
   const {
     match,
     isLoading,
@@ -64,10 +64,10 @@ export default function LiveScoreWidgetRefactored({ matchId, initialMatch, onMat
           <TeamScoreDisplay match={match} />
           
           {/* Match Status */}
-          <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center justify-between mb-6 mt-6">
             <div className="text-lg font-semibold text-gray-800">Match Status</div>
             <div className="flex items-center space-x-2">
-              <span className="inline-flex items-center px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
+              <span className="inline-flex items-center px-3 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
                 {(() => {
                   const currentInnings = (match as any).ballInfo?.currentInnings || 1;

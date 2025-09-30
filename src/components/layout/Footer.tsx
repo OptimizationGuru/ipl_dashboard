@@ -32,7 +32,7 @@ export function Footer() {
           {/* Bottom Accent */}
           <div className="flex items-center justify-center space-x-2 text-slate-600 text-xs">
             <div className="w-6 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
-            <span>© 2024 IPL T20 Dashboard</span>
+            <span>© 2025 IPL T20 Dashboard</span>
             <div className="w-6 h-px bg-gradient-to-r from-transparent via-slate-300 to-transparent"></div>
           </div>
         </div>

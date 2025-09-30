@@ -164,10 +164,16 @@ export class DynamicDataService {
   // Data generation methods
   generateUpcomingMatch(): MatchData {
     const teams = selectRandomTeams();
+    const team1Data = getTeamData(teams.team1);
+    const team2Data = getTeamData(teams.team2);
     const venue = IPL_VENUES[Math.floor(Math.random() * IPL_VENUES.length)];
     const date = new Date();
     
-    // For upcoming matches, we don't need complex match state
+    if (!team1Data || !team2Data) {
+      throw new Error('Invalid team data for upcoming match');
+    }
+    
+    // For upcoming matches, include teams data for Playing XI
     return {
       id: `upcoming-${Date.now()}`,
       team1: teams.team1,
@@ -175,8 +181,11 @@ export class DynamicDataService {
       venue,
       date: date.toISOString(),
       time: '19:30',
-      status: 'upcoming'
-      // No liveScore, teams, or other live match data for upcoming matches
+      status: 'upcoming',
+      teams: {
+        team1: team1Data,
+        team2: team2Data
+      }
     } as MatchData;
   }
 
@@ -300,6 +309,8 @@ export class DynamicDataService {
       status,
       tossInfo: matchState.tossInfo,
       currentInnings: matchState.currentInnings,
+      // Always include teams data for Playing XI
+      teams: matchState.teams,
       // Only include live score data for live matches
       ...(status === 'live' && {
         liveScore: {
@@ -321,7 +332,6 @@ export class DynamicDataService {
           currentBowler: matchState.currentBowler,
           currentRunRate: teamStats?.team1.runRate || 0
         },
-        teams: matchState.teams,
         batsmanStats: matchState.batsmanStats,
         bowlerStats: matchState.bowlerStats,
         lastWicket: matchState.lastWicket,

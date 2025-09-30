@@ -90,6 +90,36 @@ export interface MatchData {
     currentRunRate?: number;
   };
   tossInfo?: TossInfo;
+  teams?: {
+    team1: {
+      name: string;
+      players: Array<{
+        name: string;
+        role: 'Batsman' | 'Bowler' | 'All-rounder' | 'Wicket-keeper';
+        skill: string;
+        isCaptain: boolean;
+        isWicketKeeper: boolean;
+        battingOrder?: number;
+        bowlingOrder?: number;
+      }>;
+      captain: string;
+      wicketKeeper: string;
+    };
+    team2: {
+      name: string;
+      players: Array<{
+        name: string;
+        role: 'Batsman' | 'Bowler' | 'All-rounder' | 'Wicket-keeper';
+        skill: string;
+        isCaptain: boolean;
+        isWicketKeeper: boolean;
+        battingOrder?: number;
+        bowlingOrder?: number;
+      }>;
+      captain: string;
+      wicketKeeper: string;
+    };
+  };
   batsmanStats?: {
     team1: BatsmanStats[];
     team2: BatsmanStats[];
