@@ -12,11 +12,13 @@ export function Header({ onLiveScoreClick }: HeaderProps) {
   const router = useRouter();
   const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
   const handleLiveScoreClick = () => {
     // Close mobile menu if open
     setIsMenuOpen(false);
+    setIsMobileMenuOpen(false);
     
     // If we're not on the home page, navigate to home first
     if (pathname !== '/') {
@@ -130,14 +132,14 @@ export function Header({ onLiveScoreClick }: HeaderProps) {
 
           {/* Mobile Hamburger Menu Button */}
           <button
-            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
             className="sm:hidden p-2 rounded-lg bg-white shadow-md hover:shadow-lg transition-all duration-200"
             aria-label="Toggle menu"
           >
             <div className="w-6 h-6 flex flex-col justify-center items-center">
-              <span className={`block w-5 h-0.5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`}></span>
-              <span className={`block w-5 h-0.5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
-              <span className={`block w-5 h-0.5 bg-slate-700 transition-all duration-300 ${isMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'}`}></span>
+              <span className={`block w-5 h-0.5 bg-slate-700 transition-all duration-300 ${isMobileMenuOpen ? 'rotate-45 translate-y-1' : '-translate-y-1'}`}></span>
+              <span className={`block w-5 h-0.5 bg-slate-700 transition-all duration-300 ${isMobileMenuOpen ? 'opacity-0' : 'opacity-100'}`}></span>
+              <span className={`block w-5 h-0.5 bg-slate-700 transition-all duration-300 ${isMobileMenuOpen ? '-rotate-45 -translate-y-1' : 'translate-y-1'}`}></span>
             </div>
           </button>
         </div>
@@ -180,7 +182,7 @@ export function Header({ onLiveScoreClick }: HeaderProps) {
               <button
                 onClick={() => {
                   handleLiveScoreClick();
-                  setIsMobileMenuOpen(false);
+                  setIsMenuOpen(false);
                 }}
                 className="w-full px-4 py-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white rounded-lg hover:from-blue-600 hover:to-indigo-700 transition-all duration-300 text-sm font-bold shadow-md flex items-center justify-center space-x-2"
               >

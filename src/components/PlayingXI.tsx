@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, memo } from 'react';
-import { PlayingXIData, TeamTab } from '@/types/playingXI';
+import { PlayingXIData, TeamTab, Player, Team } from '@/types/playingXI';
 import TeamTabs from './playing-xi/TeamTabs';
 import TeamDetails from './playing-xi/TeamDetails';
 
@@ -266,6 +266,4 @@ export default function PlayingXI({ teams }: PlayingXIProps) {
       </div>
     </div>
   );
-});
-
-export default PlayingXI;
+}
