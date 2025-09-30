@@ -20,6 +20,15 @@ export const metadata: Metadata = {
   keywords: ["IPL", "T20", "cricket", "live scores", "points table", "schedule", "Indian Premier League"],
   authors: [{ name: "IPL Dashboard" }],
   robots: "index, follow",
+  icons: {
+    icon: [
+      { url: "/icon.svg", type: "image/svg+xml" },
+      { url: "/favicon.ico", sizes: "any" }
+    ],
+    apple: [
+      { url: "/apple-icon.svg", type: "image/svg+xml" }
+    ]
+  },
   openGraph: {
     title: "IPL T20 Live Dashboard",
     description: "Live IPL T20 scores, upcoming matches, points table, and complete schedule",

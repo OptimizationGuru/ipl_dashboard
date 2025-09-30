@@ -1,0 +1,15 @@
+<svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background circle -->
+  <circle cx="16" cy="16" r="15" fill="#1a1a1a" stroke="#ff6b35" stroke-width="2"/>
+  
+  <!-- Cricket ball -->
+  <circle cx="12" cy="12" r="4" fill="#ff6b35"/>
+  <path d="M10 12 Q12 10 14 12 Q12 14 10 12" stroke="#1a1a1a" stroke-width="1" fill="none"/>
+  
+  <!-- Cricket bat -->
+  <rect x="20" y="8" width="2" height="8" fill="#8B4513"/>
+  <rect x="18" y="10" width="6" height="2" fill="#8B4513"/>
+  
+  <!-- IPL text -->
+  <text x="16" y="26" font-family="Arial, sans-serif" font-size="6" font-weight="bold" text-anchor="middle" fill="#ff6b35">IPL</text>
+</svg>
