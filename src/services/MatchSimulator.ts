@@ -538,7 +538,7 @@ export class MatchSimulator {
 
     const battingData = this.matchState[battingTeam];
     
-\
+
     
     // Update runs
     battingData.runs += event.runs;
