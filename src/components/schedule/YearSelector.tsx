@@ -17,7 +17,8 @@ export default function YearSelector({ selectedYear, onYearChange, loading = fal
     if (onYearChange) {
       onYearChange(year);
     } else {
-      router.push(`/schedule/${year}`);
+      // Force full page reload to trigger data refetch
+      window.location.href = `/schedule/${year}`;
     }
   };
 

@@ -50,7 +50,7 @@ export default function LiveScoreWidget({ matchId, initialMatch, onMatchUpdate }
         
         <MatchResultDisplay match={match} matchResult={matchResult} />
         
-        <div className="p-4">
+        <div className="p-3 sm:p-4">
           <ControlButtons
             matchId={matchId}
             isLoading={isLoading}
@@ -64,10 +64,10 @@ export default function LiveScoreWidget({ matchId, initialMatch, onMatchUpdate }
           <TeamScoreDisplay match={match} />
           
           {/* Match Status */}
-          <div className="flex items-center justify-between mb-6 mt-6">
-            <div className="text-lg font-semibold text-gray-800">Match Status</div>
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-base sm:text-lg font-semibold text-gray-800">Match Status</div>
             <div className="flex items-center space-x-2">
-              <span className="inline-flex items-center px-3 py-2 rounded-full text-sm font-semibold bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
+              <span className="inline-flex items-center px-3 sm:px-4 py-2 rounded-full text-xs sm:text-sm font-semibold bg-gradient-to-r from-blue-50 to-indigo-50 text-blue-800 border border-blue-300 shadow-sm hover:shadow-md transition-all duration-200">
                 <div className="w-2 h-2 bg-blue-500 rounded-full mr-2 animate-pulse"></div>
                 {(() => {
                   const currentInnings = (match as any).ballInfo?.currentInnings || 1;
@@ -81,7 +81,7 @@ export default function LiveScoreWidget({ matchId, initialMatch, onMatchUpdate }
           <BatsmanStats match={match} />
           
           {/* Run Rates & Match Progress Grid */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-3 sm:gap-4">
             <RunRatesAndProgress match={match} />
             <CurrentBowler match={match} />
           </div>

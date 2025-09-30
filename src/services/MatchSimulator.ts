@@ -372,10 +372,8 @@ export class MatchSimulator {
       // Change bowler after over
       this.changeBowler(currentBowlingTeam);
       
-      // Strike rotation at end of over (only for legal deliveries)
-      if ((event.type === 'ball' || event.type === 'bye' || event.type === 'legbye') && event.runs % 2 === 1) {
-        this.switchStrike(currentBattingTeam);
-      }
+      // Strike rotation at end of over (always happens at end of over)
+      this.switchStrike(currentBattingTeam);
     }
     
     // Update commentary history
@@ -601,9 +599,8 @@ export class MatchSimulator {
         shouldIncrementBalls = false;
         break;
       case 'wicket':
-        // Wickets: increment balls only if it's a legal ball wicket
-        // This will be handled separately in the wicket logic below
-        shouldIncrementBalls = false;
+        // Wickets are legal deliveries and count towards the over
+        shouldIncrementBalls = true;
         break;
     }
     
@@ -618,8 +615,8 @@ export class MatchSimulator {
       });
       battingData.balls += 1;
       
-      // Increment legal balls in current over only for actual legal balls
-      if (event.type === 'ball') {
+      // Increment legal balls in current over for all legal deliveries
+      if (event.type === 'ball' || event.type === 'wicket' || event.type === 'bye' || event.type === 'legbye') {
         this.matchState.legalBallsThisOver += 1;
       }
       
@@ -674,8 +671,8 @@ export class MatchSimulator {
     
     // Set ball number based on delivery type
     let ballNumber: number | string;
-    if (event.type === 'ball' || event.type === 'bye' || event.type === 'legbye') {
-      // Legal deliveries (ball, bye, leg-bye) get next ball number
+    if (event.type === 'ball' || event.type === 'wicket' || event.type === 'bye' || event.type === 'legbye') {
+      // Legal deliveries (ball, wicket, bye, leg-bye) get next ball number
       ballNumber = legalBallNumber + 1;
     } else {
       // Extras (wide, no-ball) get "ball+" notation
@@ -689,10 +686,8 @@ export class MatchSimulator {
       description: event.description
     };
 
-    // Only push legal deliveries to currentOver (for over completion tracking)
-    if (event.type === 'ball' || event.type === 'bye' || event.type === 'legbye') {
-      this.matchState.currentOver.push(ballDetail);
-    }
+    // Push ALL deliveries to currentOver for complete display
+    this.matchState.currentOver.push(ballDetail);
     
     // Always push to last18Balls for comprehensive display
     this.matchState.last18Balls.push(ballDetail);
@@ -717,18 +712,18 @@ export class MatchSimulator {
     const batsmanStats = this.matchState.batsmanStats[battingTeam];
     const batsman = batsmanStats.find(s => s.name === event.batsman);
     
-    if (batsman && event.type === 'ball') {
-      // Only regular balls count as balls faced by batsman
-      batsman.runs += event.runs;
+    if (batsman && (event.type === 'ball' || event.type === 'bye' || event.type === 'legbye')) {
+      // Regular balls, byes, and leg-byes count as balls faced by batsman
+      // But only regular balls count for runs scored by batsman
+      if (event.type === 'ball') {
+        batsman.runs += event.runs;
+        if (event.runs === 4) batsman.fours += 1;
+        if (event.runs === 6) batsman.sixes += 1;
+      }
+      // Byes and leg-byes don't add to batsman's runs but count as balls faced
       batsman.balls += 1;
       batsman.strikeRate = batsman.balls > 0 ? Number(((batsman.runs / batsman.balls) * 100).toFixed(2)) : 0;
-      
-      if (event.runs === 4) batsman.fours += 1;
-      if (event.runs === 6) batsman.sixes += 1;
     }
-    
-    // Note: Byes and leg-byes don't count as balls faced by batsman
-    // They are recorded as extras and count towards team total but not individual stats
     
     if (batsman && event.type === 'wicket') {
       batsman.isOut = true;
@@ -897,7 +892,7 @@ export class MatchSimulator {
     const overNumber = this.matchState.overStats[battingTeam].length + 1;
     const overRuns = this.matchState.currentOver.reduce((total, ball) => total + ball.runs, 0);
     const overWickets = this.matchState.currentOver.filter(ball => ball.type === 'wicket').length;
-    const overBalls = this.matchState.currentOver.length; // Should be 6 for completed over
+    const overBalls = 6; // Always 6 legal balls for a completed over
     const overExtras = this.matchState.currentOver.filter(ball => 
       ball.type === 'wide' || ball.type === 'noball' || ball.type === 'bye' || ball.type === 'legbye'
     ).reduce((total, ball) => total + ball.runs, 0);

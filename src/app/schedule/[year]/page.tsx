@@ -30,7 +30,7 @@ export default function SchedulePage({ params }: SchedulePageProps) {
   console.log(`[BUILD] SchedulePage: Rendering for year ${selectedYear}`);
   
   return (
-    <div className="max-w-4xl mx-auto px-4 pt-20 pb-6">
+    <div className="max-w-4xl mx-auto px-3 sm:px-4 pt-16 sm:pt-20 pb-6">
       <ErrorBoundary>
         <ScheduleContainer searchParams={{ year: selectedYear }} />
       </ErrorBoundary>

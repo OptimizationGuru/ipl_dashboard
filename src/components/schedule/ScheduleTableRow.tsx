@@ -63,66 +63,122 @@ export default function ScheduleTableRow({ match, className = "" }: ScheduleTabl
   };
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-12 gap-2 md:gap-3 p-3 md:p-4 border-b border-slate-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group ${className}`}>
-      <div className="md:col-span-2 flex flex-row items-center space-x-2">
-        <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm border border-blue-200">
-          M{match.matchNumber}
-        </span>
-        <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium border shadow-sm ${getStatusColor()}`}>
-          {getStatusText()}
-        </span>
-      </div>
-      
-      <div className="md:col-span-5 flex flex-col space-y-0.5">
-        <div className="flex items-center space-x-1.5">
-          <span className="text-green-600 text-xs">⚔️</span>
-          <span className={`font-semibold text-xs truncate ${
-            match.status === 'completed' && match.result?.winner === match.team1 
-              ? 'text-green-700 font-bold' 
-              : 'text-slate-800'
-          }`}>
-            {getTeamShortForm(match.team1)}
+    <div className={`border-b border-slate-200 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 transition-all duration-300 group ${className}`}>
+      {/* Desktop View */}
+      <div className="hidden md:grid grid-cols-12 gap-3 p-4">
+        <div className="col-span-2 flex flex-row items-center space-x-2">
+          <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm border border-blue-200">
+            M{match.matchNumber}
           </span>
-          <span className="text-slate-400 text-xs flex-shrink-0">vs</span>
-          <span className={`font-semibold text-xs truncate ${
-            match.status === 'completed' && match.result?.winner === match.team2 
-              ? 'text-green-700 font-bold' 
-              : 'text-slate-800'
-          }`}>
-            {getTeamShortForm(match.team2)}
+          <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium border shadow-sm ${getStatusColor()}`}>
+            {getStatusText()}
           </span>
         </div>
         
-        {match.status === 'completed' && match.result && (
-          <div className="flex items-center space-x-1 ml-6">
-            <span className="text-yellow-600 text-xs">🏆</span>
-            <span className="text-xs font-medium text-green-700">
-              {getTeamShortForm(match.result.winner)} won by {match.result.winBy}
+        <div className="col-span-5 flex flex-col space-y-0.5">
+          <div className="flex items-center space-x-1.5">
+            <span className="text-green-600 text-xs">⚔️</span>
+            <span className={`font-semibold text-xs truncate ${
+              match.status === 'completed' && match.result?.winner === match.team1 
+                ? 'text-green-700 font-bold' 
+                : 'text-slate-800'
+            }`}>
+              {getTeamShortForm(match.team1)}
             </span>
-            {match.result.team1Score && match.result.team2Score && (
-              <span className="text-xs text-slate-500 ml-2">
-                • {getTeamShortForm(match.team1)} {match.result.team1Score} | {getTeamShortForm(match.team2)} {match.result.team2Score}
-              </span>
-            )}
+            <span className="text-slate-400 text-xs flex-shrink-0">vs</span>
+            <span className={`font-semibold text-xs truncate ${
+              match.status === 'completed' && match.result?.winner === match.team2 
+                ? 'text-green-700 font-bold' 
+                : 'text-slate-800'
+            }`}>
+              {getTeamShortForm(match.team2)}
+            </span>
           </div>
-        )}
+          
+          {match.status === 'completed' && match.result && (
+            <div className="flex items-center space-x-1 ml-6">
+              <span className="text-yellow-600 text-xs">🏆</span>
+              <span className="text-xs font-medium text-green-700">
+                {getTeamShortForm(match.result.winner)} won by {match.result.winBy}
+              </span>
+              {match.result.team1Score && match.result.team2Score && (
+                <span className="text-xs text-slate-500 ml-2">
+                  • {getTeamShortForm(match.team1)} {match.result.team1Score} | {getTeamShortForm(match.team2)} {match.result.team2Score}
+                </span>
+              )}
+            </div>
+          )}
+        </div>
+        
+        <div className="col-span-3 flex items-start">
+          <div className="flex items-center space-x-1">
+            <span className="text-purple-600 text-xs">🏟️</span>
+            <span className="text-xs font-medium text-slate-700 leading-tight" title={match.venue}>
+              {getVenueShortForm(match.venue || 'TBD')}
+            </span>
+          </div>
+        </div>
+        
+        <div className="col-span-2 flex flex-col space-y-0.5">
+          <div className="flex items-center space-x-1">
+            <span className="text-orange-600 text-xs">⏰</span>
+            <span className="text-xs font-semibold text-slate-800">{match.date}</span>
+          </div>
+          <span className="text-xs text-slate-500 ml-4">{match.time || 'TBD'}</span>
+        </div>
       </div>
-      
-      <div className="md:col-span-3 flex items-start">
-        <div className="flex items-center space-x-1">
+
+      {/* Mobile View */}
+      <div className="md:hidden p-4">
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-2">
+            <span className="bg-gradient-to-r from-blue-100 to-indigo-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold shadow-sm border border-blue-200">
+              M{match.matchNumber}
+            </span>
+            <span className={`px-1.5 py-0.5 rounded-full text-xs font-medium border shadow-sm ${getStatusColor()}`}>
+              {getStatusText()}
+            </span>
+          </div>
+          <div className="text-right">
+            <div className="text-sm font-semibold text-slate-800">{match.date}</div>
+            <div className="text-xs text-slate-500">{match.time || 'TBD'}</div>
+          </div>
+        </div>
+        
+        <div className="mb-3">
+          <div className="flex items-center justify-center space-x-2 mb-2">
+            <span className={`font-semibold text-sm ${
+              match.status === 'completed' && match.result?.winner === match.team1 
+                ? 'text-green-700 font-bold' 
+                : 'text-slate-800'
+            }`}>
+              {getTeamShortForm(match.team1)}
+            </span>
+            <span className="text-slate-400 text-sm">vs</span>
+            <span className={`font-semibold text-sm ${
+              match.status === 'completed' && match.result?.winner === match.team2 
+                ? 'text-green-700 font-bold' 
+                : 'text-slate-800'
+            }`}>
+              {getTeamShortForm(match.team2)}
+            </span>
+          </div>
+          
+          {match.status === 'completed' && match.result && (
+            <div className="text-center">
+              <span className="text-xs font-medium text-green-700">
+                🏆 {getTeamShortForm(match.result.winner)} won by {match.result.winBy}
+              </span>
+            </div>
+          )}
+        </div>
+        
+        <div className="flex items-center justify-center space-x-1">
           <span className="text-purple-600 text-xs">🏟️</span>
-          <span className="text-xs font-medium text-slate-700 leading-tight" title={match.venue}>
+          <span className="text-xs font-medium text-slate-700 text-center" title={match.venue}>
             {getVenueShortForm(match.venue || 'TBD')}
           </span>
         </div>
-      </div>
-      
-      <div className="md:col-span-2 flex flex-col space-y-0.5">
-        <div className="flex items-center space-x-1">
-          <span className="text-orange-600 text-xs">⏰</span>
-          <span className="text-xs font-semibold text-slate-800">{match.date}</span>
-        </div>
-        <span className="text-xs text-slate-500 ml-4">{match.time || 'TBD'}</span>
       </div>
     </div>
   );

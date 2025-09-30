@@ -12,7 +12,8 @@ export default function PointsTableYearSelector({ selectedYear, loading = false 
   const router = useRouter();
 
   const handleYearChange = (year: string) => {
-    router.push(`/points-table/${year}`);
+    // Force full page reload to trigger data refetch
+    window.location.href = `/points-table/${year}`;
   };
 
   return (

@@ -15,6 +15,11 @@ export default function BallByBallDisplay({ balls, title, subtitle }: BallByBall
 
   // Calculate total runs for this over
   const totalRuns = balls.reduce((sum, ball) => sum + (ball.runs || 0), 0);
+  
+  // Calculate legal balls (excluding wides and no-balls)
+  const legalBalls = balls.filter(ball => 
+    ball.type === 'ball' || ball.type === 'bye' || ball.type === 'legbye'
+  ).length;
 
   return (
     <div className="mt-4">
@@ -23,7 +28,7 @@ export default function BallByBallDisplay({ balls, title, subtitle }: BallByBall
           <div className="text-sm font-semibold text-gray-700">{title}</div>
           <div className="flex items-center space-x-2">
             <div className="text-xs text-gray-500">
-              {subtitle || `${balls.length} balls`}
+              {subtitle || `${legalBalls} balls`}
             </div>
             {title === 'Current Over' && (
               <div className="text-xs bg-purple-100 text-purple-800 px-2 py-1 rounded-full font-medium">

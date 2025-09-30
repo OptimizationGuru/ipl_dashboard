@@ -22,20 +22,20 @@ export default function ControlButtons({
   onSpecificTeams
 }: ControlButtonsProps) {
   return (
-    <div className="flex items-center justify-center space-x-2 sm:space-x-3 mb-6">
-      {/* Hidden: Refresh button (redundant with Next Ball) */}
-      <button
+    <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 mb-6">
+      {/* Hidden and disabled: Refresh button */}
+      {/* <button
         onClick={onRefresh}
-        disabled={isLoading}
-        className="hidden px-3 sm:px-4 py-2 bg-gradient-to-r from-gray-600 to-gray-700 text-white rounded-lg hover:from-gray-700 hover:to-gray-800 transition-all duration-200 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={true}
+        className="text-xs bg-black text-white px-2 sm:px-3 py-1.5 rounded hover:bg-gray-800 transition-colors font-medium cursor-pointer disabled:opacity-50"
       >
-        🔄 Refresh
-      </button>
+        🔄 <span className="hidden sm:inline">Refresh</span>
+      </button> */}
       
       <button
         onClick={onNextBall}
         disabled={isLoading}
-        className="px-3 sm:px-4 py-2 bg-gradient-to-r from-green-500 to-green-600 text-white rounded-lg hover:from-green-600 hover:to-green-700 transition-all duration-200 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="text-xs bg-gradient-to-r from-green-500 to-emerald-600 text-white px-2 sm:px-3 py-1.5 rounded-lg hover:from-green-600 hover:to-emerald-700 transition-all duration-200 font-medium cursor-pointer disabled:opacity-50 shadow-md hover:shadow-lg"
       >
         ⚡ Next Ball
       </button>
@@ -43,27 +43,28 @@ export default function ControlButtons({
       <button
         onClick={onReset}
         disabled={isLoading}
-        className="px-3 sm:px-4 py-2 bg-gradient-to-r from-red-500 to-red-600 text-white rounded-lg hover:from-red-600 hover:to-red-700 transition-all duration-200 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        className="text-xs bg-gradient-to-r from-red-500 to-rose-600 text-white px-2 sm:px-3 py-1.5 rounded-lg hover:from-red-600 hover:to-rose-700 transition-all duration-200 font-medium cursor-pointer disabled:opacity-50 shadow-md hover:shadow-lg"
       >
         🔄 Reset
       </button>
       
-      <button
+      {/* Hidden and disabled: Random Teams button */}
+      {/* <button
         onClick={onRandomTeams}
-        disabled={isLoading}
-        className="hidden px-3 sm:px-4 py-2 bg-gradient-to-r from-purple-500 to-purple-600 text-white rounded-lg hover:from-purple-600 hover:to-purple-700 transition-all duration-200 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={true}
+        className="text-xs bg-purple-600 text-white px-2 sm:px-3 py-1.5 rounded hover:bg-purple-700 transition-colors font-medium cursor-pointer disabled:opacity-50"
       >
-        🎲 Random Teams
-      </button>
+        🎲 <span className="hidden sm:inline">Random Teams</span>
+      </button> */}
       
-      {/* Hidden: CSK vs KKR button (redundant with Random Teams) */}
-      <button
+      {/* Hidden and disabled: CSK vs KKR button */}
+      {/* <button
         onClick={() => onSpecificTeams('Chennai Super Kings', 'Kolkata Knight Riders')}
-        disabled={isLoading}
-        className="hidden px-3 sm:px-4 py-2 bg-gradient-to-r from-orange-500 to-orange-600 text-white rounded-lg hover:from-orange-600 hover:to-orange-700 transition-all duration-200 text-xs sm:text-sm font-semibold shadow-md hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={true}
+        className="text-xs bg-orange-600 text-white px-2 sm:px-3 py-1.5 rounded hover:bg-orange-700 transition-colors font-medium cursor-pointer disabled:opacity-50"
       >
-        🏏 CSK vs KKR
-      </button>
+        🏏 <span className="hidden sm:inline">CSK vs KKR</span>
+      </button> */}
     </div>
   );
 }
