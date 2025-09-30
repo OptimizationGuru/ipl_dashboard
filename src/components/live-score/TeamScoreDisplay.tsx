@@ -52,43 +52,43 @@ export default function TeamScoreDisplay({ match }: TeamScoreDisplayProps) {
   };
 
   const battingTeam = getBattingTeam(match);
-  const battingTeamData = battingTeam === 'team1' ? match.liveScore.team1 : match.liveScore.team2;
+  const battingTeamData = battingTeam === 'team1' ? match.liveScore?.team1 : match.liveScore?.team2;
   const battingTeamName = battingTeam === 'team1' ? match.team1 : match.team2;
   const bowlingTeam = battingTeam === 'team1' ? 'team2' : 'team1';
-  const bowlingTeamData = bowlingTeam === 'team1' ? match.liveScore.team1 : match.liveScore.team2;
+  const bowlingTeamData = bowlingTeam === 'team1' ? match.liveScore?.team1 : match.liveScore?.team2;
   const bowlingTeamName = bowlingTeam === 'team1' ? match.team1 : match.team2;
 
   return (
-    <div className="grid grid-cols-2 gap-6">
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
       {/* Batting Team Score */}
-      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-6 border-2 border-green-300 shadow-lg hover:shadow-xl transition-all duration-200">
+      <div className="bg-gradient-to-br from-green-50 to-emerald-50 rounded-xl p-4 sm:p-6 border-2 border-green-300 shadow-lg hover:shadow-xl transition-all duration-200">
         <div className="flex items-center justify-between mb-2">
-          <div className="text-sm font-semibold text-gray-700">{battingTeamName}</div>
-          <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
-            🏏 BATTING
+          <div className="text-xs sm:text-sm font-semibold text-gray-700 truncate pr-2">{battingTeamName}</div>
+          <div className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium flex-shrink-0">
+            🏏 <span className="hidden sm:inline">BATTING</span>
           </div>
         </div>
-        <div className="text-4xl font-black text-gray-900 mb-1">
-          {battingTeamData.runs}/{Math.min(battingTeamData.wickets, 10)}
+        <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1">
+          {battingTeamData?.runs || 0}/{Math.min(battingTeamData?.wickets || 0, 10)}
         </div>
-        <div className="text-sm text-gray-600 font-medium">
-          ({formatOvers(battingTeamData.balls || 0)} overs)
+        <div className="text-xs sm:text-sm text-gray-600 font-medium">
+          ({formatOvers(battingTeamData?.balls || 0)} overs)
         </div>
       </div>
 
       {/* Bowling Team Score */}
-      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-sm hover:shadow-md transition-all duration-200">
+      <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 sm:p-6 border border-blue-200 shadow-sm hover:shadow-md transition-all duration-200">
         <div className="flex items-center justify-between mb-2">
-          <div className="text-sm font-semibold text-gray-700">{bowlingTeamName}</div>
-          <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
-            🏟️ BOWLING
+          <div className="text-xs sm:text-sm font-semibold text-gray-700 truncate pr-2">{bowlingTeamName}</div>
+          <div className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium flex-shrink-0">
+            🏟️ <span className="hidden sm:inline">BOWLING</span>
           </div>
         </div>
-        <div className="text-4xl font-black text-gray-900 mb-1">
-          {bowlingTeamData.runs}/{Math.min(bowlingTeamData.wickets, 10)}
+        <div className="text-3xl sm:text-4xl font-black text-gray-900 mb-1">
+          {bowlingTeamData?.runs || 0}/{Math.min(bowlingTeamData?.wickets || 0, 10)}
         </div>
-        <div className="text-sm text-gray-600 font-medium">
-          ({formatOvers(bowlingTeamData.balls || 0)} overs)
+        <div className="text-xs sm:text-sm text-gray-600 font-medium">
+          ({formatOvers(bowlingTeamData?.balls || 0)} overs)
         </div>
       </div>
     </div>

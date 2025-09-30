@@ -11,7 +11,7 @@ export default function PointsTableRow({ team, isHeader = false }: PointsTableRo
   }
   if (isHeader) {
     return (
-      <div className="grid grid-cols-9 gap-2 p-4 bg-gradient-to-r from-slate-100 to-gray-100 font-bold text-sm text-slate-700">
+      <div className="hidden sm:grid grid-cols-9 gap-2 p-4 bg-gradient-to-r from-slate-100 to-gray-100 font-bold text-sm text-slate-700">
         <div className="text-center">Pos</div>
         <div className="col-span-2">Team</div>
         <div className="text-center">M</div>
@@ -39,29 +39,77 @@ export default function PointsTableRow({ team, isHeader = false }: PointsTableRo
   if (!team) return null;
 
   return (
-    <div className={`grid grid-cols-9 gap-2 p-4 border-b border-slate-200 transition-all duration-200 ${getPositionColor(team.position)}`}>
-      <div className="flex justify-center items-center">
-        <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${getPositionBadge(team.position)}`}>
-          {team.position}
-        </span>
+    <>
+      {/* Desktop View */}
+      <div className={`hidden sm:grid grid-cols-9 gap-2 p-4 border-b border-slate-200 transition-all duration-200 ${getPositionColor(team.position)}`}>
+        <div className="flex justify-center items-center">
+          <span className={`w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold ${getPositionBadge(team.position)}`}>
+            {team.position}
+          </span>
+        </div>
+        <div className="col-span-2 flex items-center">
+          <span className="font-semibold text-slate-800 truncate">{team.team}</span>
+        </div>
+        <div className="text-center text-sm text-slate-600 font-medium">{team.matches}</div>
+        <div className="text-center text-sm text-slate-600 font-medium">{team.won}</div>
+        <div className="text-center text-sm text-slate-600 font-medium">{team.lost}</div>
+        <div className="text-center text-sm text-slate-600 font-medium">{team.tied}</div>
+        <div className="text-center font-bold text-slate-800 text-lg">{team.points}</div>
+        <div className="text-center text-sm">
+          <span className={`px-3 py-1 rounded-full text-xs font-mono font-semibold shadow-sm ${
+            team.netRunRate >= 0 
+              ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200' 
+              : 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border border-red-200'
+          }`}>
+            {team.netRunRate >= 0 ? '+' : ''}{team.netRunRate.toFixed(3)}
+          </span>
+        </div>
       </div>
-      <div className="col-span-2 flex items-center">
-        <span className="font-semibold text-slate-800 truncate">{team.team}</span>
+
+      {/* Mobile View */}
+      <div className={`sm:hidden p-4 border-b border-slate-200 transition-all duration-200 my-0.5 ${getPositionColor(team.position)}`}>
+        <div className="flex items-center justify-between mb-3">
+          <div className="flex items-center space-x-3">
+            <span className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold ${getPositionBadge(team.position)}`}>
+              {team.position}
+            </span>
+            <span className="font-semibold text-slate-800 text-base">{team.team}</span>
+          </div>
+          <div className="text-right">
+            <div className="text-2xl font-bold text-slate-800">{team.points}</div>
+            <div className="text-xs text-slate-600">Points</div>
+          </div>
+        </div>
+        
+        <div className="grid grid-cols-4 gap-3 text-center">
+          <div>
+            <div className="text-lg font-bold text-slate-700">{team.matches}</div>
+            <div className="text-xs text-slate-600">Matches</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-green-600">{team.won}</div>
+            <div className="text-xs text-slate-600">Won</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-red-600">{team.lost}</div>
+            <div className="text-xs text-slate-600">Lost</div>
+          </div>
+          <div>
+            <div className="text-lg font-bold text-slate-700">{team.tied}</div>
+            <div className="text-xs text-slate-600">Tied</div>
+          </div>
+        </div>
+        
+        <div className="mt-3 text-center">
+          <span className={`px-3 py-1 rounded-full text-xs font-mono font-semibold shadow-sm ${
+            team.netRunRate >= 0 
+              ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200' 
+              : 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border border-red-200'
+          }`}>
+            NRR: {team.netRunRate >= 0 ? '+' : ''}{team.netRunRate.toFixed(3)}
+          </span>
+        </div>
       </div>
-      <div className="text-center text-sm text-slate-600 font-medium">{team.matches}</div>
-      <div className="text-center text-sm text-slate-600 font-medium">{team.won}</div>
-      <div className="text-center text-sm text-slate-600 font-medium">{team.lost}</div>
-      <div className="text-center text-sm text-slate-600 font-medium">{team.tied}</div>
-      <div className="text-center font-bold text-slate-800 text-lg">{team.points}</div>
-      <div className="text-center text-sm">
-        <span className={`px-3 py-1 rounded-full text-xs font-mono font-semibold shadow-sm ${
-          team.netRunRate >= 0 
-            ? 'bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border border-green-200' 
-            : 'bg-gradient-to-r from-red-100 to-pink-100 text-red-800 border border-red-200'
-        }`}>
-          {team.netRunRate >= 0 ? '+' : ''}{team.netRunRate.toFixed(3)}
-        </span>
-      </div>
-    </div>
+    </>
   );
 }

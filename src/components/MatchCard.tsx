@@ -35,7 +35,7 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
   };
 
   return (
-    <div className="bg-white rounded-lg shadow-md p-4 mb-4 border border-gray-200">
+    <div className="bg-white rounded-lg shadow-md p-3 sm:p-4 mb-4 border border-gray-200">
       {/* Header with status */}
       <div className="flex justify-between items-center mb-3">
         <span className={`px-2 py-1 rounded-full text-xs font-semibold ${getStatusColor(match.status)}`}>
@@ -52,18 +52,18 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
       {/* Teams */}
       <div className="mb-3">
         <div className="flex justify-between items-center mb-2">
-          <span className="font-semibold text-gray-800">{match.team1}</span>
+          <span className="font-semibold text-gray-800 text-sm sm:text-base truncate pr-2">{match.team1}</span>
           {match.liveScore && showLiveScore && (
-            <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+            <span className="text-xs sm:text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-shrink-0">
               {match.liveScore.team1.runs}/{match.liveScore.team1.wickets} ({formatOvers(match.liveScore.team1.balls || 0)})
             </span>
           )}
         </div>
         <div className="text-center text-gray-500 text-sm mb-2">VS</div>
         <div className="flex justify-between items-center">
-          <span className="font-semibold text-gray-800">{match.team2}</span>
+          <span className="font-semibold text-gray-800 text-sm sm:text-base truncate pr-2">{match.team2}</span>
           {match.liveScore && showLiveScore && (
-            <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
+            <span className="text-xs sm:text-sm font-mono bg-gray-100 px-2 py-1 rounded flex-shrink-0">
               {match.liveScore.team2.runs}/{match.liveScore.team2.wickets} ({formatOvers(match.liveScore.team2.balls || 0)})
             </span>
           )}
@@ -72,22 +72,22 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
 
       {/* Live match details */}
       {match.status === 'live' && match.liveScore && showLiveScore && (
-        <div className="bg-gray-50 rounded p-3 mb-3">
+        <div className="bg-gray-50 rounded p-2 sm:p-3 mb-3">
           <div className="text-xs text-gray-600 mb-2">Current Situation</div>
           {match.liveScore.currentBatsman && (
-            <div className="text-sm">
+            <div className="text-xs sm:text-sm">
               <span className="text-gray-600">Batting: </span>
               <span className="font-medium">{match.liveScore.currentBatsman}</span>
             </div>
           )}
           {match.liveScore.currentBowler && (
-            <div className="text-sm">
+            <div className="text-xs sm:text-sm">
               <span className="text-gray-600">Bowling: </span>
               <span className="font-medium">{match.liveScore.currentBowler}</span>
             </div>
           )}
           {match.liveScore.requiredRunRate && (
-            <div className="text-sm">
+            <div className="text-xs sm:text-sm">
               <span className="text-gray-600">Required RR: </span>
               <span className="font-medium">{match.liveScore.requiredRunRate}</span>
             </div>
@@ -97,10 +97,10 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
 
       {/* Match details */}
       <div className="border-t pt-3">
-        <div className="flex justify-between items-center text-sm text-gray-600">
-          <div>
-            <div className="font-medium">{match.venue}</div>
-            <div>{match.date} • {match.time}</div>
+        <div className="flex justify-between items-center text-xs sm:text-sm text-gray-600">
+          <div className="flex-1 min-w-0">
+            <div className="font-medium truncate">{match.venue}</div>
+            <div className="truncate">{match.date} • {match.time}</div>
           </div>
         </div>
       </div>
