@@ -10,9 +10,12 @@ export const revalidate = false;
 export async function generateStaticParams() {
   console.log('[BUILD] generateStaticParams: Starting for schedule');
   const params = [
+    { year: '2020' },
+    { year: '2021' },
+    { year: '2022' },
+    { year: '2023' },
     { year: '2024' },
-    { year: '2025' },
-    { year: '2023' }
+    { year: '2025' }
   ];
   console.log('[BUILD] generateStaticParams: Returning params for schedule:', params);
   return params;

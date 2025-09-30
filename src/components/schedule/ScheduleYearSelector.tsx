@@ -2,22 +2,26 @@
 
 import { useRouter } from 'next/navigation';
 
-interface YearSelectorProps {
+interface ScheduleYearSelectorProps {
   selectedYear: string;
-  onYearChange?: (year: string) => void;
   loading?: boolean;
 }
 
 const AVAILABLE_YEARS = ['2020', '2021', '2022', '2023', '2024', '2025'];
 
-export default function YearSelector({ selectedYear, onYearChange, loading = false }: YearSelectorProps) {
+export default function ScheduleYearSelector({ selectedYear, loading = false }: ScheduleYearSelectorProps) {
   const router = useRouter();
 
   const handleYearChange = (year: string) => {
-    if (onYearChange) {
-      onYearChange(year);
-    } else {
+    console.log('Year changed to:', year);
+    console.log('Current URL:', window.location.href);
+    console.log('Navigating to:', `/schedule/${year}`);
+    
+    try {
       router.push(`/schedule/${year}`);
+      console.log('Navigation triggered successfully');
+    } catch (error) {
+      console.error('Navigation error:', error);
     }
   };
 

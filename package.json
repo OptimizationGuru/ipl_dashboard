@@ -5,10 +5,11 @@
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build --turbopack",
-    "build:static": "next build",
+    "build:static": "rm -rf .next && next build",
     "start": "next start",
     "lint": "eslint",
-    "clean": "node scripts/clean.js"
+    "clean": "node scripts/clean.js",
+    "clear-cache": "rm -rf .next/cache && rm -rf node_modules/.cache && rm -rf .turbo"
   },
   "dependencies": {
     "@types/cheerio": "^0.22.35",

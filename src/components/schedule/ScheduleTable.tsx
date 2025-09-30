@@ -2,7 +2,7 @@ import ScheduleSkeleton from './ScheduleSkeleton';
 import ErrorDisplay from '@/components/ui/ErrorDisplay';
 import ScheduleTableHeader from './ScheduleTableHeader';
 import ScheduleTableRow from './ScheduleTableRow';
-import YearSelector from './YearSelector';
+import ScheduleYearSelector from './ScheduleYearSelector';
 import { ScheduleData } from '@/types';
 
 interface ScheduleTableProps {
@@ -38,7 +38,7 @@ export default function ScheduleTable({ schedule, loading, error, selectedYear }
               <h3 className="text-xl font-bold bg-gradient-to-r from-blue-900 to-indigo-900 bg-clip-text text-transparent">
                 IPL {selectedYear} Season
               </h3>
-              <YearSelector 
+              <ScheduleYearSelector 
                 selectedYear={selectedYear}
                 loading={false}
               />

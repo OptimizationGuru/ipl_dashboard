@@ -12,7 +12,7 @@ export default function PointsTableYearSelector({ selectedYear, loading = false 
   const router = useRouter();
 
   const handleYearChange = (year: string) => {
-    router.push(`/points-table?year=${year}`);
+    router.push(`/points-table/${year}`);
   };
 
   return (
