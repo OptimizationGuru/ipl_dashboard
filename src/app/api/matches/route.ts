@@ -4,7 +4,7 @@ import { getCachedData, setCachedData } from '@/lib/cache';
 import { MatchData } from '@/types';
 
 // Dynamic route for live updates
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
 
 export async function GET(request: NextRequest) {
   try {

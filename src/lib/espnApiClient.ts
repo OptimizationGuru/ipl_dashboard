@@ -35,6 +35,8 @@ export class ESPNApiClient {
       });
 
       const data = response.data;
+      console.log(`[BUILD] ESPN API for year ${year}: ${JSON.stringify(data)}`);
+      
       if (!data || (!data.children?.length && !data.standings?.length && !data.teams?.length)) {
         throw new Error('No valid data found');
       }

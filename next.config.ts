@@ -1,10 +1,11 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  // Removed static export to support API routes for live updates
-  trailingSlash: false,
+  // Use SSG without export (allows API routes and dynamic features)
+  // output: 'export', // Disabled - incompatible with API routes
+  // trailingSlash: true, // Not needed without export
   images: {
-    unoptimized: true
+    unoptimized: true  // Keep for compatibility
   },
   eslint: {
     ignoreDuringBuilds: true

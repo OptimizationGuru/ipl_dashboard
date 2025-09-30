@@ -4,6 +4,7 @@ import { getSchedule } from '@/lib/scheduleService';
 import ScheduleTable from './ScheduleTable';
 import SeasonInfo from './SeasonInfo';
 import YearSelector from './YearSelector';
+import 'server-only';
 
 const IPL_TEAMS = [
   'Chennai Super Kings',

@@ -1,19 +1,20 @@
 import { ScheduleData } from '@/types';
+import { ScheduleScraper } from './scrapers/scheduleScraper';
+import { dummySchedule } from './dummyDataNew';
 
 export async function getSchedule(year: string = '2025'): Promise<ScheduleData[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/schedule?year=${year}`, {
-      next: { revalidate: 0 }
-    });
+    // Try scraping directly (not HTTP request to own API)
+    const scraper = new ScheduleScraper();
+    const result = await scraper.scrapeSchedule(year);
     
-    if (!response.ok) {
-      throw new Error('Failed to fetch schedule');
+    if (result.success && result.data && result.data.length > 0) {
+      return result.data;
     }
-    
-    const data = await response.json();
-    return data.data || [];
-  } catch (error) {
-    return [];
+  } catch (scrapingError) {
+    console.log('Schedule scraping failed, using dummy data');
   }
+
+  // Fallback to dummy data
+  return dummySchedule;
 }

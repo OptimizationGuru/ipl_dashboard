@@ -1,19 +1,6 @@
-import { ErrorBoundary } from '@/components/dashboard/ErrorBoundary';
-import PointsTableLayout from '@/components/points-table/PointsTableLayout';
-import PointsTableContainer from '@/components/points-table/PointsTableContainer';
+import { redirect } from 'next/navigation';
 
-interface PointsTablePageProps {
-  searchParams: { year?: string };
-}
-
-export default function PointsTablePage({ searchParams }: PointsTablePageProps) {
-  const selectedYear = searchParams.year || '2025';
-  
-  return (
-    <PointsTableLayout selectedYear={selectedYear}>
-      <ErrorBoundary>
-        <PointsTableContainer searchParams={{ year: selectedYear }} />
-      </ErrorBoundary>
-    </PointsTableLayout>
-  );
+// Redirect to the default year (2025)
+export default function PointsTablePage() {
+  redirect('/points-table/2025');
 }

@@ -1,20 +1,21 @@
 import { PointsTableData } from '@/types';
+import { ESPNApiClient } from './espnApiClient';
+import { DynamicDataGenerator } from './dynamicDataGenerator';
 
 export async function getPointsTable(year: string = '2025'): Promise<PointsTableData[]> {
   try {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
-    const response = await fetch(`${baseUrl}/api/points-table?year=${year}`, {
-      next: { revalidate: 0 } // No caching for testing
-    });
+    // Try ESPN API directly (not HTTP request to own API)
+    const espnClient = new ESPNApiClient();
+    const espnData = await espnClient.fetchPointsTable(year);
     
-    if (!response.ok) {
-      throw new Error('Failed to fetch points table');
+    if (espnData && espnData.length > 0) {
+      return espnData;
     }
-    
-    const data = await response.json();
-    return data.data || [];
-  } catch (error) {
-    console.error('Error fetching points table:', error);
-    return [];
+  } catch (espnError) {
+    console.log('ESPN API failed, using dynamic data generation');
   }
+
+  // Fallback to dynamic data generation
+  const dataGenerator = new DynamicDataGenerator();
+  return dataGenerator.generatePointsTable(year);
 }

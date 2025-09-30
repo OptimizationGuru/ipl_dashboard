@@ -13,7 +13,6 @@ export async function GET(request: NextRequest) {
   const cacheKey = `points_table_${year}`;
   
   try {
-    
     // Validate year (2020-2025)
     const validYears = ['2020', '2021', '2022', '2023', '2024', '2025'];
     if (!validYears.includes(year)) {
@@ -54,14 +53,15 @@ export async function GET(request: NextRequest) {
         });
       }
     } catch (espnError) {
-      console.log('ESPN API failed, using dynamic data generation');
+      console.log(`[BUILD] ESPN API failed for year ${year}:`, espnError);
     }
 
     // Fallback to dynamic data generation
+    console.log(`[BUILD] API Route: Falling back to dynamic data generation for year ${year}`);
     return generateFallbackResponse(cacheKey, year);
 
   } catch (error) {
-    console.error('API error:', error);
+    console.error(`[BUILD] Critical error for year ${year}:`, error);
     return generateFallbackResponse(cacheKey, year, error instanceof Error ? error : undefined);
   }
 }
