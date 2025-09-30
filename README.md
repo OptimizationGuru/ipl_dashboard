@@ -2,6 +2,14 @@
 
 This project is a mobile-first IPL T20 dashboard that displays live match info, upcoming matches, points table, and full match schedule. Built with Next.js, TypeScript, Tailwind CSS, and Node.js API routes.
 
+## 🚀 Live Demo
+
+**Production URL:** https://ipl-livestream.netlify.app/
+
+**GitHub Repository:** https://github.com/OptimizationGuru/ipl_dashboard
+
+Experience the full application with real-time match simulation, live score updates, and comprehensive IPL data management.
+
 ---
 
 ## Table of Contents
@@ -90,15 +98,21 @@ The IPL T20 Live Dashboard is a comprehensive cricket application featuring:
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   API Layer     │    │   Data Sources  │
-│   (Next.js)     │◄──►│   (API Routes)  │◄──►│   (ESPN/Dummy)  │
+│   Frontend      │    │   API Layer     │    │   Cache Layer   │
+│   (Next.js)     │◄──►│   (API Routes)  │◄──►│   (Redis)       │
 └─────────────────┘    └─────────────────┘    └─────────────────┘
          │                       │                       │
          ▼                       ▼                       ▼
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Components    │    │   Services      │    │   Scrapers      │
-│   (React)       │    │   (Business)    │    │   (Data Fetch)  │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
+│   Components    │    │   Services      │    │   Data Sources  │
+│   (React)       │    │   (Business)    │    │   (ESPN/Scrapers│
+└─────────────────┘    └─────────────────┘    │   /Dynamic Gen) │
+         │                       │            └─────────────────┘
+         ▼                       ▼                       │
+┌─────────────────┐    ┌─────────────────┐               │
+│   Hooks         │    │   Match         │               │
+│   (useLiveScore)│    │   Simulator     │◄──────────────┘
+└─────────────────┘    └─────────────────┘
 ```
 
 ### Key Architectural Patterns
@@ -118,11 +132,12 @@ The IPL T20 Live Dashboard is a comprehensive cricket application featuring:
 App (Root)
 ├── Layout
 │   ├── Header
-│   ├── Navigation
+│   ├── HeaderWrapper
 │   └── Footer
 ├── Pages
 │   ├── Home (Dashboard)
 │   │   ├── MatchesList
+│   │   ├── StatsGrid
 │   │   └── MatchTabs
 │   │       ├── LiveScoreWidget
 │   │       │   ├── MatchHeader
@@ -130,24 +145,38 @@ App (Root)
 │   │       │   ├── TeamScoreDisplay
 │   │       │   ├── BatsmanStats
 │   │       │   ├── BallByBallDisplay
-│   │       │   └── LiveCommentary
+│   │       │   ├── LiveCommentary
+│   │       │   ├── CurrentBowler
+│   │       │   ├── LastWicket
+│   │       │   ├── RunRatesAndProgress
+│   │       │   └── MatchResultDisplay
 │   │       └── PlayingXI
 │   │           ├── TeamHeader
 │   │           ├── TeamTabs
+│   │           ├── TeamDetails
 │   │           └── PlayerCard
 │   ├── PointsTable
 │   │   ├── PointsTableContainer
 │   │   ├── PointsTableHeader
+│   │   ├── PointsTableLayout
+│   │   ├── PointsTableStats
+│   │   ├── PointsTableYearSelector
 │   │   └── PointsTableRow
 │   └── Schedule
 │       ├── ScheduleContainer
 │       ├── ScheduleHeader
-│       └── ScheduleTable
+│       ├── ScheduleTable
+│       ├── ScheduleTableHeader
+│       ├── ScheduleTableRow
+│       ├── ScheduleYearSelector
+│       ├── SeasonInfo
+│       └── YearSelector
 └── UI Components
     ├── Loader
     ├── ErrorDisplay
     ├── EmptyState
-    └── Skeleton
+    ├── Skeleton
+    └── ConfettiEffect
 ```
 
 ### Container-Presenter Pattern Implementation
@@ -186,9 +215,9 @@ const MatchTabsPresenter = ({ activeTab, onTabChange, match }) => {
 The application integrates with ESPN Cricinfo for live cricket data:
 
 #### Scraping Classes
-- **`MatchScraper`** - Live and upcoming matches
-- **`PointsTableScraper`** - Team standings and points
 - **`ScheduleScraper`** - Complete match fixtures
+- **`ESPNApiClient`** - Points table data from ESPN API
+- **`DynamicDataGenerator`** - Fallback data generation
 
 #### Match Simulation Engine
 
@@ -245,9 +274,9 @@ The application integrates with ESPN Cricinfo for live cricket data:
 
 * **Scraping Classes:**
 
-  * `MatchScraper` → live & upcoming matches
-  * `PointsTableScraper` → points table
   * `ScheduleScraper` → full schedule
+  * `ESPNApiClient` → points table data
+  * `DynamicDataService` → live match simulation
 
 * **API Routes:**
 
@@ -255,7 +284,7 @@ The application integrates with ESPN Cricinfo for live cricket data:
   * `/api/points-table` → points table
   * `/api/schedule` → full schedule
 
-* **Caching:** ~~Redis~~ - Currently disabled, using direct API calls
+* **Caching:** Redis - Active caching with 1-hour TTL for schedule/points, 1-minute for live matches
 
 * **Error Handling:** Dummy fallback data if scraping fails
 
@@ -312,8 +341,8 @@ npm run dev
 # Install dependencies
 npm install
 
-# Create environment file
-cp .env.example .env
+# Create environment file (optional)
+# cp .env.example .env
 
 # Start development server
 npm run dev
@@ -339,19 +368,19 @@ ESPN_BASE_URL=https://www.espncricinfo.com
 - **Method**: GET
 - **Purpose**: Fetch live and upcoming matches
 - **Response**: Array of match objects
-- **Caching**: Direct API calls (no caching)
+- **Caching**: Redis cache with 1-minute TTL
 
 #### `/api/points-table`
 - **Method**: GET
 - **Purpose**: Get current points table standings
 - **Response**: Array of team standings
-- **Caching**: Direct API calls (no caching)
+- **Caching**: Redis cache with 1-hour TTL
 
 #### `/api/schedule`
 - **Method**: GET
 - **Purpose**: Fetch complete match schedule
 - **Response**: Array of scheduled matches
-- **Caching**: Direct API calls (no caching)
+- **Caching**: Redis cache with 1-hour TTL
 
 ### API Response Format
 
@@ -374,10 +403,8 @@ interface ApiResponse<T> {
 / (Home)
 ├── /points-table
 │   └── /[year] (Dynamic year selection)
-├── /schedule
-│   └── /[year] (Dynamic year selection)
-└── /live-score
-    └── /[matchId] (Dynamic match details)
+└── /schedule
+    └── /[year] (Dynamic year selection)
 ```
 
 ### Page Components
@@ -426,11 +453,18 @@ npx tsc --noEmit
 src/
 ├── app/                    # Next.js App Router
 │   ├── api/               # API routes
+│   │   ├── matches/       # Live match endpoints
+│   │   ├── points-table/  # Points table endpoints
+│   │   └── schedule/      # Schedule endpoints
 │   ├── globals.css        # Global styles
 │   ├── layout.tsx         # Root layout
-│   └── page.tsx           # Home page
+│   ├── page.tsx           # Home page
+│   ├── points-table/      # Points table pages
+│   └── schedule/          # Schedule pages
 ├── components/            # React components
 │   ├── dashboard/         # Dashboard components
+│   ├── effects/           # Animation effects
+│   ├── layout/            # Layout components
 │   ├── live-score/        # Live score components
 │   ├── playing-xi/        # Playing XI components
 │   ├── points-table/      # Points table components
@@ -439,7 +473,7 @@ src/
 ├── hooks/                 # Custom React hooks
 ├── lib/                   # Utility libraries
 │   ├── scrapers/          # Web scraping classes
-│   └── cache.ts           # Caching utilities (disabled)
+│   └── cache.ts           # Redis caching utilities
 ├── services/              # Business logic services
 ├── types/                 # TypeScript type definitions
 └── data/                  # Static data and constants
@@ -449,9 +483,9 @@ src/
 
 - **TypeScript** - Strict type checking enabled
 - **ESLint** - Code quality and consistency
-- **Component Testing** - Unit tests for components
-- **API Testing** - Integration tests for API routes
-- **Performance Monitoring** - Core Web Vitals tracking
+- **Turbopack** - Fast development builds
+- **Error Boundaries** - Graceful error handling
+- **Custom Hooks** - Reusable state logic
 
 ---
 
@@ -497,38 +531,59 @@ CMD ["npm", "start"]
 
 ---
 
-## Time Plan (2 Days)
+## 🚀 Getting Started Guide
 
-**Day 1:**
+### For New Developers
 
-* Setup project, Tailwind, TypeScript
-* Implement scrapers and API routes with caching
-* Test data fetching & dummy fallback
+**1. Understanding the Codebase Structure**
+```bash
+# Key directories to explore first:
+src/
+├── app/                    # Next.js App Router (pages & API routes)
+├── components/            # Reusable UI components
+├── services/              # Business logic (DynamicDataService, MatchSimulator)
+├── lib/                   # Utilities (scrapers, cache, data generation)
+└── hooks/                 # Custom React hooks
+```
 
-**Day 2:**
+**2. Key Files to Start With**
+- `src/app/page.tsx` - Main dashboard entry point
+- `src/services/DynamicDataService.ts` - Core match simulation logic
+- `src/components/LiveScoreWidget.tsx` - Live score display component
+- `src/hooks/useLiveScore.ts` - Live score state management
 
-* Build pages with modular components
-* Implement rendering strategy (SSG/SSR/CSR)
-* Mobile-first UI & styling
-* Test & deploy
+**3. Development Workflow**
+```bash
+# Start development server
+npm run dev
 
----
+# Test live features
+# Visit http://localhost:3000 and interact with:
+# - Live score updates (auto-refresh every 30s)
+# - Match controls (Next Ball, Reset, Random Teams)
+# - Points table navigation
+# - Schedule year selection
+```
 
-This plan ensures the dashboard is **fully functional** within 2 days while keeping code modular, reusable, and maintainable.
+**4. Understanding Data Flow**
+1. **Live Matches**: `DynamicDataService` → `MatchSimulator` → Real-time updates
+2. **Points Table**: `ESPNApiClient` → Cache → Fallback to generated data
+3. **Schedule**: `ScheduleScraper` → Cache → Fallback to dummy data
 
 ---
 
 ## Implementation Status ✅
 
 **Completed Features:**
-- ✅ Scraping classes for matches, points table, and schedule
-- ✅ API routes with caching and fallback data
+- ✅ Schedule scraping with fallback data
+- ✅ ESPN API integration for points table
+- ✅ Dynamic match simulation engine
+- ✅ API routes with Redis caching
 - ✅ Mobile-first responsive UI components
 - ✅ Live score updates with client-side polling
 - ✅ Points table with team standings
 - ✅ Complete match schedule
 - ✅ Error handling and dummy data fallbacks
-- ✅ ~~Redis caching integration~~ - Disabled
 - ✅ TypeScript interfaces and type safety
 
 **Key Features:**
@@ -536,7 +591,7 @@ This plan ensures the dashboard is **fully functional** within 2 days while keep
 - **Points Table**: Team standings with playoff qualification indicators
 - **Schedule**: Complete fixture list with venue and timing
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Caching**: ~~Redis integration~~ - Currently disabled
+- **Caching**: Redis integration - Active with TTL-based caching
 - **Fallback Data**: Dummy data when scraping fails
 - **Error Handling**: Graceful degradation and user feedback
 
