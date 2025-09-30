@@ -20,19 +20,6 @@ export default function MatchTabs({ match, onMatchUpdate }: MatchTabsProps) {
     initialMatch: match, 
     onMatchUpdate 
   });
-  
-  // Debug logging for match updates
-  console.log('🏷️ MatchTabs: Received match data:', {
-    matchId: match.id,
-    team1: match.team1,
-    team2: match.team2,
-    currentTeam1: currentMatch.team1,
-    currentTeam2: currentMatch.team2,
-    status: match.status,
-    liveScore: match.liveScore,
-    activeTab,
-    timestamp: new Date().toISOString()
-  });
 
   return (
     <div>

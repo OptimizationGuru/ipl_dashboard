@@ -256,27 +256,16 @@ export class MatchSimulator {
     const battingTeamData = this.matchState[currentBattingTeam];
     const bowlingTeamData = this.matchState[currentBowlingTeam];
 
-    console.log('🎯 MatchSimulator: Generating cricket event', {
-      innings: this.matchState.currentInnings,
-      battingTeam: currentBattingTeam,
-      overs: battingTeamData.overs, // Backward compatibility
-      oversStr: battingTeamData.oversStr,
-      completedOvers: battingTeamData.completedOvers,
-      balls: battingTeamData.balls,
-      runs: battingTeamData.runs,
-      wickets: battingTeamData.wickets,
-      timestamp: new Date().toISOString()
-    });
+   
 
     // Check if innings is complete (use balls instead of decimal overs)
     if (battingTeamData.balls >= MatchSimulator.BALLS_IN_INNINGS || battingTeamData.wickets >= 10) {
-      console.log('🏁 MatchSimulator: Innings complete, handling completion');
       return this.handleInningsComplete();
     }
 
     // Generate event based on probabilities
     const eventType = this.determineEventType();
-    console.log('🎲 MatchSimulator: Event type determined:', eventType);
+    
     
     let event: CricketEvent;
     switch (eventType) {
@@ -301,13 +290,7 @@ export class MatchSimulator {
         break;
     }
 
-    console.log('📊 MatchSimulator: Generated event:', {
-      type: event.type,
-      runs: event.runs,
-      description: event.description,
-      nextBallDelay: event.nextBallDelay,
-      timestamp: new Date().toISOString()
-    });
+ 
 
     return event;
   }
@@ -321,14 +304,7 @@ export class MatchSimulator {
     const currentBattingTeam = this.matchState.currentInnings === 1 ? 'team1' : 'team2';
     const currentBowlingTeam = currentBattingTeam === 'team1' ? 'team2' : 'team1';
     
-    console.log('🔍 processEvent START:', {
-      eventType: event.type,
-      eventRuns: event.runs,
-      battingTeam: currentBattingTeam,
-      ballsBefore: this.matchState[currentBattingTeam].balls,
-      oversBefore: this.matchState[currentBattingTeam].overs, // Backward compatibility
-      oversStrBefore: this.matchState[currentBattingTeam].oversStr
-    });
+  
     
     const beforeState = { ...this.matchState[currentBattingTeam] };
     
@@ -337,12 +313,7 @@ export class MatchSimulator {
     
     const afterState = this.matchState[currentBattingTeam];
     
-    console.log('🔍 processEvent AFTER updateMatchState:', {
-      eventType: event.type,
-      ballsAfter: this.matchState[currentBattingTeam].balls,
-      oversAfter: this.matchState[currentBattingTeam].overs, // Backward compatibility
-      oversStrAfter: this.matchState[currentBattingTeam].oversStr
-    });
+  
 
     // Update ball details FIRST (before over completion check)
     this.updateBallDetails(event, {
@@ -563,19 +534,11 @@ export class MatchSimulator {
   }
 
   private updateMatchState(event: CricketEvent, battingTeam: 'team1' | 'team2', bowlingTeam: 'team1' | 'team2'): void {
-    console.log('🔍 updateMatchState CALLED:', event.type, battingTeam, 'at', new Date().toISOString());
     if (!this.matchState) return;
 
     const battingData = this.matchState[battingTeam];
     
-    console.log('🔍 updateMatchState DEBUG:', {
-      eventType: event.type,
-      eventRuns: event.runs,
-      battingTeam,
-      ballsBefore: battingData.balls,
-      oversBefore: battingData.overs, // Backward compatibility
-      oversStrBefore: battingData.oversStr
-    });
+\
     
     // Update runs
     battingData.runs += event.runs;
@@ -606,13 +569,6 @@ export class MatchSimulator {
     
     if (shouldIncrementBalls) {
       const oldBalls = battingData.balls;
-      console.log('🔍 BALLS INCREMENT DEBUG:', {
-        event: event.type,
-        runs: event.runs,
-        ballsBefore: oldBalls,
-        ballsAfter: oldBalls + 1,
-        timestamp: new Date().toISOString()
-      });
       battingData.balls += 1;
       
       // Increment legal balls in current over for all legal deliveries
@@ -623,16 +579,7 @@ export class MatchSimulator {
       // Update overs fields (keep balls as source of truth)
       this.updateOversFields(battingData);
       
-      console.log('🔍 OVERS CALCULATION DEBUG:', {
-        event: event.type,
-        runs: event.runs,
-        oldBalls,
-        newBalls: battingData.balls,
-        legalBallsThisOver: this.matchState.legalBallsThisOver,
-        oversStr: battingData.oversStr,
-        oversDecimal: battingData.overs,
-        calculation: `balls: ${battingData.balls}, legalBallsThisOver: ${this.matchState.legalBallsThisOver}, oversStr: "${battingData.oversStr}", overs: ${battingData.overs}`
-      });
+   
     }
     
     // Handle wickets

@@ -87,7 +87,6 @@ export class DynamicDataGenerator {
    * Generate realistic points table data for a given year
    */
   generatePointsTable(year: string): PointsTableData[] {
-    console.log(`[BUILD] DynamicDataGenerator: Generating points table for year ${year}`);
     
     const seasonContext = this.getSeasonContext(year);
     const seed = this.createYearSeed(year);
@@ -100,8 +99,6 @@ export class DynamicDataGenerator {
     // Sort and assign positions
     const result = this.sortAndRankTeams(teams);
     
-    console.log(`[BUILD] DynamicDataGenerator: Generated ${result.length} teams for year ${year}`);
-    console.log(`[BUILD] DynamicDataGenerator: Sample team data:`, result[0]);
     
     return result;
   }

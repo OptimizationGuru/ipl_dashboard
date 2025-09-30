@@ -13,13 +13,8 @@ export default function ScheduleYearSelector({ selectedYear, loading = false }: 
   const router = useRouter();
 
   const handleYearChange = (year: string) => {
-    console.log('Year changed to:', year);
-    console.log('Current URL:', window.location.href);
-    console.log('Navigating to:', `/schedule/${year}`);
-    
     try {
       router.push(`/schedule/${year}`);
-      console.log('Navigation triggered successfully');
     } catch (error) {
       console.error('Navigation error:', error);
     }

@@ -34,7 +34,6 @@ export class DynamicDataService {
 
   setTeams(team1: string, team2: string): void {
     this.currentTeams = { team1, team2 };
-    console.log(`🎯 Teams set: ${team1} vs ${team2}`);
   }
 
   getCurrentTeams(): { team1: string; team2: string } | null {
@@ -47,7 +46,6 @@ export class DynamicDataService {
 
   forceRandomTeams(): void {
     this.currentTeams = this.selectRandomTeams();
-    console.log(`🎲 Forced random teams: ${this.currentTeams.team1} vs ${this.currentTeams.team2}`);
   }
 
   // Match simulation methods
