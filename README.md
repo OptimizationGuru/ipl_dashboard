@@ -98,16 +98,16 @@ The IPL T20 Live Dashboard is a comprehensive cricket application featuring:
 
 ```
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Frontend      │    │   API Layer     │    │   Cache Layer   │
-│   (Next.js)     │◄──►│   (API Routes)  │◄──►│   (Redis)       │
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-         │                       │                       │
-         ▼                       ▼                       ▼
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Components    │    │   Services      │    │   Data Sources  │
-│   (React)       │    │   (Business)    │    │   (ESPN/Scrapers│
+│   Frontend      │    │   API Layer     │    │   Data Sources  │
+│   (Next.js)     │◄──►│   (API Routes)  │◄──►│   (ESPN/Scrapers│
 └─────────────────┘    └─────────────────┘    │   /Dynamic Gen) │
          │                       │            └─────────────────┘
+         ▼                       ▼                       │
+┌─────────────────┐    ┌─────────────────┐               │
+│   Components    │    │   Services      │               │
+│   (React)       │    │   (Business)    │               │
+└─────────────────┘    └─────────────────┘               │
+         │                       │                       │
          ▼                       ▼                       │
 ┌─────────────────┐    ┌─────────────────┐               │
 │   Hooks         │    │   Match         │               │
@@ -284,7 +284,7 @@ The application integrates with ESPN Cricinfo for live cricket data:
   * `/api/points-table` → points table
   * `/api/schedule` → full schedule
 
-* **Caching:** Redis - Active caching with 1-hour TTL for schedule/points, 1-minute for live matches
+* **Caching:** Redis - Currently disabled, all cache functions return null
 
 * **Error Handling:** Dummy fallback data if scraping fails
 
@@ -368,19 +368,19 @@ ESPN_BASE_URL=https://www.espncricinfo.com
 - **Method**: GET
 - **Purpose**: Fetch live and upcoming matches
 - **Response**: Array of match objects
-- **Caching**: Redis cache with 1-minute TTL
+- **Caching**: No caching (Redis disabled)
 
 #### `/api/points-table`
 - **Method**: GET
 - **Purpose**: Get current points table standings
 - **Response**: Array of team standings
-- **Caching**: Redis cache with 1-hour TTL
+- **Caching**: No caching (Redis disabled)
 
 #### `/api/schedule`
 - **Method**: GET
 - **Purpose**: Fetch complete match schedule
 - **Response**: Array of scheduled matches
-- **Caching**: Redis cache with 1-hour TTL
+- **Caching**: No caching (Redis disabled)
 
 ### API Response Format
 
@@ -473,7 +473,7 @@ src/
 ├── hooks/                 # Custom React hooks
 ├── lib/                   # Utility libraries
 │   ├── scrapers/          # Web scraping classes
-│   └── cache.ts           # Redis caching utilities
+│   └── cache.ts           # Caching utilities (disabled)
 ├── services/              # Business logic services
 ├── types/                 # TypeScript type definitions
 └── data/                  # Static data and constants
@@ -578,7 +578,7 @@ npm run dev
 - ✅ Schedule scraping with fallback data
 - ✅ ESPN API integration for points table
 - ✅ Dynamic match simulation engine
-- ✅ API routes with Redis caching
+- ✅ API routes with fallback data
 - ✅ Mobile-first responsive UI components
 - ✅ Live score updates with client-side polling
 - ✅ Points table with team standings
@@ -591,7 +591,7 @@ npm run dev
 - **Points Table**: Team standings with playoff qualification indicators
 - **Schedule**: Complete fixture list with venue and timing
 - **Responsive Design**: Mobile-first approach with Tailwind CSS
-- **Caching**: Redis integration - Active with TTL-based caching
+- **Caching**: Redis integration - Currently disabled
 - **Fallback Data**: Dummy data when scraping fails
 - **Error Handling**: Graceful degradation and user feedback
 
