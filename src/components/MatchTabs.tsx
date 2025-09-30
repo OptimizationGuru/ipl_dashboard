@@ -1,16 +1,28 @@
 'use client';
 
 import { useState } from 'react';
-import LiveScoreWidget from './LiveScoreWidget';
-import PlayingXI from './PlayingXI';
+import LiveScoreWidgetRefactored from './LiveScoreWidgetRefactored';
+import PlayingXIRefactored from './PlayingXIRefactored';
 import { MatchData } from '@/types';
 
 interface MatchTabsProps {
   match: MatchData;
+  onMatchUpdate?: () => void;
 }
 
-export default function MatchTabs({ match }: MatchTabsProps) {
+export default function MatchTabs({ match, onMatchUpdate }: MatchTabsProps) {
   const [activeTab, setActiveTab] = useState<'live' | 'teams'>('live');
+  
+  // Debug logging for match updates
+  console.log('🏷️ MatchTabs: Received match data:', {
+    matchId: match.id,
+    team1: match.team1,
+    team2: match.team2,
+    status: match.status,
+    liveScore: match.liveScore,
+    activeTab,
+    timestamp: new Date().toISOString()
+  });
 
   return (
     <div className="pt-4">
@@ -20,7 +32,7 @@ export default function MatchTabs({ match }: MatchTabsProps) {
           onClick={() => setActiveTab('live')}
           className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ${
             activeTab === 'live'
-              ? 'bg-gradient-to-r from-red-600 to-red-700 text-white shadow-lg'
+              ? 'bg-gradient-to-r from-emerald-500 to-teal-600 text-white shadow-lg'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
         >
@@ -30,7 +42,7 @@ export default function MatchTabs({ match }: MatchTabsProps) {
           onClick={() => setActiveTab('teams')}
           className={`px-4 py-2 rounded-lg font-semibold text-sm transition-all duration-200 ${
             activeTab === 'teams'
-              ? 'bg-gradient-to-r from-purple-600 to-purple-700 text-white shadow-lg'
+              ? 'bg-gradient-to-r from-indigo-500 to-blue-600 text-white shadow-lg'
               : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
           }`}
         >
@@ -45,19 +57,13 @@ export default function MatchTabs({ match }: MatchTabsProps) {
         className="hidden"
         aria-hidden="true"
       />
-      <button
-        id="playing-xi-tab"
-        onClick={() => setActiveTab('teams')}
-        className="hidden"
-        aria-hidden="true"
-      />
       
       {activeTab === 'live' ? (
-        <LiveScoreWidget matchId={match.id} initialMatch={match} />
+        <LiveScoreWidgetRefactored matchId={match.id} initialMatch={match} onMatchUpdate={onMatchUpdate} />
       ) : (
         <div>
           {(match as any).teams && (
-            <PlayingXI teams={(match as any).teams} />
+            <PlayingXIRefactored teams={(match as any).teams} />
           )}
         </div>
       )}

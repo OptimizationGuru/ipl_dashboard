@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { MatchData } from '@/types';
+import { formatOvers } from '@/lib/utils';
 
 interface MatchCardProps {
   match: MatchData;
@@ -54,7 +55,7 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
           <span className="font-semibold text-gray-800">{match.team1}</span>
           {match.liveScore && showLiveScore && (
             <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-              {match.liveScore.team1.runs}/{match.liveScore.team1.wickets} ({match.liveScore.team1.overs})
+              {match.liveScore.team1.runs}/{match.liveScore.team1.wickets} ({formatOvers(match.liveScore.team1.balls || 0)})
             </span>
           )}
         </div>
@@ -63,7 +64,7 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
           <span className="font-semibold text-gray-800">{match.team2}</span>
           {match.liveScore && showLiveScore && (
             <span className="text-sm font-mono bg-gray-100 px-2 py-1 rounded">
-              {match.liveScore.team2.runs}/{match.liveScore.team2.wickets} ({match.liveScore.team2.overs})
+              {match.liveScore.team2.runs}/{match.liveScore.team2.wickets} ({formatOvers(match.liveScore.team2.balls || 0)})
             </span>
           )}
         </div>
@@ -107,6 +108,4 @@ function MatchCard({ match, showLiveScore = true }: MatchCardProps) {
   );
 }
 
-// Memoize MatchCard to prevent unnecessary re-renders when parent updates
-// This is beneficial because MatchCard is rendered in a list and has complex rendering logic
 export default memo(MatchCard);

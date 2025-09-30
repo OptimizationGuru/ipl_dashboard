@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  output: 'export',
+  // Removed static export to support API routes for live updates
   trailingSlash: false,
   images: {
     unoptimized: true
