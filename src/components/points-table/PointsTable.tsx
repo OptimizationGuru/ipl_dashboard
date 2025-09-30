@@ -141,15 +141,15 @@ export default function PointsTable({ pointsTable, loading, error, selectedYear 
       </div>
 
       {/* Legend */}
-      <div className="bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200 shadow-sm">
+      <div className="bg-gradient-to-br from-slate-50 via-emerald-50 to-teal-50 rounded-xl p-4 border border-emerald-200 shadow-sm">
         <div className="flex flex-nowrap items-center gap-3 sm:gap-4 text-sm overflow-x-auto">
           <span className="font-semibold bg-gradient-to-r from-slate-800 to-slate-600 bg-clip-text text-transparent flex-shrink-0">Legend:</span>
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <span className="px-2 py-1 rounded-full text-xs font-medium border bg-green-100 text-green-800 border-green-200 shadow-sm">Q</span>
+            <span className="px-2 py-1 rounded-full text-xs font-medium border bg-gradient-to-r from-green-100 to-emerald-100 text-green-800 border-green-200 shadow-sm">Q</span>
             <span className="text-slate-700 text-sm font-medium">Qualified for Playoffs</span>
           </div>
           <div className="flex items-center space-x-2 flex-shrink-0">
-            <span className="px-2 py-1 rounded-full text-xs font-medium border bg-yellow-100 text-yellow-800 border-yellow-200 shadow-sm">E</span>
+            <span className="px-2 py-1 rounded-full text-xs font-medium border bg-gradient-to-r from-yellow-100 to-orange-100 text-yellow-800 border-yellow-200 shadow-sm">E</span>
             <span className="text-slate-700 text-sm font-medium">Eliminated</span>
           </div>
         </div>
